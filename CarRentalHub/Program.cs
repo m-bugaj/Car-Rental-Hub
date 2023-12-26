@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using CarRentalHub.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<CarRentalHubContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CarRentalHubContext") ?? throw new InvalidOperationException("Connection string 'CarRentalHubContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
