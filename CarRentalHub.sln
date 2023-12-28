@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRentalHub", "CarRentalHub\CarRentalHub.csproj", "{069B7862-2B4C-4E9C-A648-A4902814A76C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarRentalHub", "CarRentalHub\CarRentalHub.csproj", "{069B7862-2B4C-4E9C-A648-A4902814A76C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7653EA9C-D1AF-46B7-B672-C0C2317B9A7C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

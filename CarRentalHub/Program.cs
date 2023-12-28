@@ -1,12 +1,35 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CarRentalHub.Data;
+using Microsoft.AspNetCore.Identity;
+using CarRentalHub.Areas.Identity.Data;
+using Microsoft.Extensions.Options;
+
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<CarRentalHubContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CarRentalHubContext") ?? throw new InvalidOperationException("Connection string 'CarRentalHubContext' not found.")));
 
+// Add DbContext for Identity
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuthDbContextConnection") ?? throw new InvalidOperationException("Connection string 'AuthDbContext' not found.")));
+
+// In the future, change RequireConfirmedAccount to true and handle confirmation of account creation by email.
+builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<AuthDbContext>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+// Settings of required password
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireUppercase = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireDigit = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredUniqueChars = 1;
+});
 
 var app = builder.Build();
 
@@ -28,5 +51,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();

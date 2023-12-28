@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8618: Pole niedopuszczające wartości null musi zawierać wartość inną niż null podczas kończenia działania konstruktora. Rozważ zadeklarowanie pola jako dopuszczającego wartość null.
+dotnet_diagnostic.CS8618.severity = silent
