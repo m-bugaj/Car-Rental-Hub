@@ -29,6 +29,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredUniqueChars = 1;
+    options.User.RequireUniqueEmail = true;
 });
 
 var app = builder.Build();
