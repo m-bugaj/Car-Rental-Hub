@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CarRentalHub.Areas.Identity.Data;
 
 namespace CarRentalHub.Models
 {
@@ -34,5 +35,9 @@ namespace CarRentalHub.Models
 
         [Display(Name = "Cena za dobę")]
         public decimal Price { get; set; }
+
+        //Foreign key (from AspNetUsers - Id)
+        public string? UserId { get; set; }
+
     }
 }

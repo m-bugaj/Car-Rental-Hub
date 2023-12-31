@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CarRentalHub.Data;
 using CarRentalHub.Models;
 using Microsoft.AspNetCore.Authorization;
+using CarRentalHub.Areas.Identity.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace CarRentalHub.Controllers
 {
@@ -15,10 +17,13 @@ namespace CarRentalHub.Controllers
     public class CarsController : Controller
     {
         private readonly CarRentalHubContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public CarsController(CarRentalHubContext context)
+
+        public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Cars
@@ -57,10 +62,16 @@ namespace CarRentalHub.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price")] Car car)
+        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId")] Car car)
         {
             if (ModelState.IsValid)
             {
+                // Get logged in user
+                var user = await _userManager.GetUserAsync(User);
+
+                // Assign UserId before adding to the database context
+                car.UserId = user.Id;
+
                 _context.Add(car);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
