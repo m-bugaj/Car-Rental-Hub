@@ -20,6 +20,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<PhotoContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("PhotoContext") ?? throw new InvalidOperationException("Connection string 'PhotoContext' not found.")));
 
 // Settings of required password
 builder.Services.Configure<IdentityOptions>(options =>
