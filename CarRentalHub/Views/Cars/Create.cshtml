@@ -4,14 +4,22 @@
     ViewData["Title"] = "Create";
 }
 
+<style>
+    .selected-thumbnail {
+        border: 2px solid #007bff; /* Kolor niebieski */
+    }
+</style>
+
 <h1>Create</h1>
 
 <h4>Car</h4>
 <hr />
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 <div class="row">
+ 
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        
             <div class="form-group">
                 <label asp-for="VehicleBrand" class="control-label"></label>
                 <input asp-for="VehicleBrand" class="form-control" />
@@ -54,16 +62,114 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+            
+
+        
     </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="Photos" class="control-label"></label>
+            <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
+            <span asp-validation-for="Photos" class="text-danger"></span>
+        </div>
+        <div id="imagePreview" class="row" onclick="handleThumbnailClick()"></div>
+        <div id="selectedPhoto" class="row mt-3">
+            <label>Wybrane zdjęcie główne:</label>
+            <div class="form-group">
+                <label asp-for="SelectedPhotoId" class="control-label"></label>
+                <input asp-for="SelectedPhotoId" type="hidden" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+ 
 </div>
+</form>
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    var selectedFileId = null;
+
+    function previewImages() {
+        var preview = document.getElementById("imagePreview");
+        var files = document.getElementById("photoInput").files;
+
+        preview.innerHTML = "";
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+
+            reader.onload = (function (file, i) {
+                return function (e) {
+                    var fileId = "photo_" + i;
+                    var colDiv = document.createElement("div");
+                    colDiv.className = "col-md-4";
+                    var img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "img-thumbnail";
+                    img.setAttribute("data-file-id", fileId);
+
+                    colDiv.appendChild(img);
+                    preview.appendChild(colDiv);
+
+                    if (i === 0) {
+                        // Ustaw pierwsze zdjęcie jako domyślnie wybrane
+                        selectedFileId = fileId;
+                        img.classList.add("selected");
+                        displaySelectedPhoto(fileId);
+                    }
+                };
+            })(file, i);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+
+    function handleThumbnailClick() {
+        var thumbnails = document.getElementsByClassName("img-thumbnail");
+
+        for (var j = 0; j < thumbnails.length; j++) {
+            thumbnails[j].classList.remove("selected");
+        }
+
+        var clickedThumbnail = event.target;
+        clickedThumbnail.classList.add("selected");
+        selectedFileId = clickedThumbnail.getAttribute("data-file-id");
+
+        // Wywołaj funkcję wyświetlającą wybrane zdjęcie
+        displaySelectedPhoto(selectedFileId);
+
+        // Ustaw ukryte pole z identyfikatorem wybranego zdjęcia
+        document.getElementById("selectedPhotoId").value = selectedFileId;
+    }
+
+    function displaySelectedPhoto(fileId) {
+        var selectedPhotoDiv = document.getElementById("selectedPhoto");
+        selectedPhotoDiv.innerHTML = "";
+
+        // Dodaj etykietę "Wybrane zdjęcie główne"
+        var label = document.createElement("label");
+        label.textContent = "Wybrane zdjęcie główne:";
+        selectedPhotoDiv.appendChild(label);
+
+        var selectedPhoto = document.createElement("img");
+        selectedPhoto.src = document.querySelector('[data-file-id="' + fileId + '"]').src;
+        selectedPhoto.className = "img-thumbnail";
+        selectedPhotoDiv.appendChild(selectedPhoto);
+    }
+
+
+    
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

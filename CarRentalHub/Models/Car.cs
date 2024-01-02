@@ -39,5 +39,11 @@ namespace CarRentalHub.Models
         //Foreign key (from AspNetUsers - Id)
         public string? UserId { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Prześlij zdjęcia: ")]
+        public List<IFormFile>? Photos { get; set; }
+
+        public string? SelectedPhotoId { get; set; }
+
     }
 }

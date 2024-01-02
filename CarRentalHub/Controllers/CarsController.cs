@@ -10,6 +10,7 @@ using CarRentalHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using CarRentalHub.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CarRentalHub.Controllers
 {
@@ -18,12 +19,15 @@ namespace CarRentalHub.Controllers
     {
         private readonly CarRentalHubContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly PhotoContext _photoContext;
 
-
-        public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager)
+        public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, PhotoContext photoContext)
         {
             _context = context;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
+            _photoContext = photoContext;
         }
 
         // GET: Cars
@@ -62,7 +66,7 @@ namespace CarRentalHub.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId")] Car car)
+        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId")] Car car)
         {
             if (ModelState.IsValid)
             {
@@ -74,6 +78,60 @@ namespace CarRentalHub.Controllers
 
                 _context.Add(car);
                 await _context.SaveChangesAsync();
+
+                Console.WriteLine("ELO");
+
+                // Przetwarzanie przesyłanych plików
+                if (car.Photos != null && car.Photos.Count > 0)
+                {
+                    Console.WriteLine("MELO");
+
+                    var photoCount = 0;
+                    bool _isMainPhoto = false;
+
+                    foreach (var photo in car.Photos)
+                    {
+                        Console.WriteLine("ELO");
+                        Console.WriteLine(photo);
+                        Console.WriteLine(car.SelectedPhotoId);
+                        // Sprawdź, czy plik został przesłany
+                        if (photo.Length > 0)
+                        {
+                            // Wygeneruj unikalną nazwę pliku (możesz użyć GUID)
+                            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(photo.FileName);
+
+                            // Określ lokalizację, gdzie zostanie zapisane zdjęcie (np. w folderze wwwroot/images)
+                            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                            // Zapisz plik na dysku
+                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await photo.CopyToAsync(fileStream);
+                            }
+
+                            // Tutaj możesz zapisać ścieżkę do zdjęcia w bazie danych
+                            // Przykładowo, dodaj kolumnę do modelu Car i zapisz ścieżkę
+                            // car.PhotoPath = "/images/" + uniqueFileName;
+                            if (photoCount != 0)
+                            {
+                                _isMainPhoto = false;
+                            }
+
+                            photoCount++;
+
+                            _photoContext.Photo.Add(new Photo
+                            {
+                                ImagePath = filePath,
+                                IsMainPhoto = _isMainPhoto, // Ustaw to odpowiednio
+                                AdvertisementId = car.ID // Ustaw to odpowiednio
+                            });
+                        }
+                    }
+                    // Zapisz zmiany w bazie danych
+                    await _photoContext.SaveChangesAsync();
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
