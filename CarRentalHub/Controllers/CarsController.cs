@@ -66,7 +66,7 @@ namespace CarRentalHub.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId")] Car car)
+        public async Task<IActionResult> Create([Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId,SelectedFileName")] Car car)
         {
             if (ModelState.IsValid)
             {
@@ -92,8 +92,8 @@ namespace CarRentalHub.Controllers
                     foreach (var photo in car.Photos)
                     {
                         Console.WriteLine("ELO");
-                        Console.WriteLine(photo);
-                        Console.WriteLine(car.SelectedPhotoId);
+                        Console.WriteLine(photo.FileName);
+                        Console.WriteLine(car.SelectedFileName);
                         // Sprawdź, czy plik został przesłany
                         if (photo.Length > 0)
                         {
@@ -123,8 +123,8 @@ namespace CarRentalHub.Controllers
                             _photoContext.Photo.Add(new Photo
                             {
                                 ImagePath = filePath,
-                                IsMainPhoto = _isMainPhoto, // Ustaw to odpowiednio
-                                AdvertisementId = car.ID // Ustaw to odpowiednio
+                                IsMainPhoto = photo.FileName == car.SelectedFileName, // IsMainPhoto Setting
+                                AdvertisementId = car.ID
                             });
                         }
                     }

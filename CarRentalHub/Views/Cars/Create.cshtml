@@ -4,11 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<style>
-    .selected-thumbnail {
-        border: 2px solid #007bff; /* Kolor niebieski */
-    }
-</style>
+<body>
 
 <h1>Create</h1>
 
@@ -73,13 +69,10 @@
             <span asp-validation-for="Photos" class="text-danger"></span>
         </div>
         <div id="imagePreview" class="row" onclick="handleThumbnailClick()"></div>
-        <div id="selectedPhoto" class="row mt-3">
-            <label>Wybrane zdjęcie główne:</label>
-            <div class="form-group">
-                <label asp-for="SelectedPhotoId" class="control-label"></label>
-                <input asp-for="SelectedPhotoId" type="hidden" />
+            <div id="selectedPhoto" class="row mt-3">
+                <label>Wybrane zdjęcie główne:</label>
+
             </div>
-        </div>
     </div>
     
     <div class="form-group">
@@ -87,6 +80,7 @@
     </div>
  
 </div>
+        <input type="hidden" id="selectedFileName" name="selectedFileName" />
 </form>
 
 <div>
@@ -95,6 +89,7 @@
 
 <script>
     var selectedFileId = null;
+    //var selectedFileName = null;
 
     function previewImages() {
         var preview = document.getElementById("imagePreview");
@@ -115,6 +110,9 @@
                     img.src = e.target.result;
                     img.className = "img-thumbnail";
                     img.setAttribute("data-file-id", fileId);
+
+                    // Ustaw atrybut "data-file-name"
+                    img.setAttribute("data-file-name", file.name);
 
                     colDiv.appendChild(img);
                     preview.appendChild(colDiv);
@@ -144,9 +142,24 @@
         var clickedThumbnail = event.target;
         clickedThumbnail.classList.add("selected");
         selectedFileId = clickedThumbnail.getAttribute("data-file-id");
+        var SelectedFileName = clickedThumbnail.getAttribute("data-file-name");
+
+        console.log("SelectedFileName in JavaScript: ", SelectedFileName);
+        
 
         // Wywołaj funkcję wyświetlającą wybrane zdjęcie
         displaySelectedPhoto(selectedFileId);
+
+        //document.getElementById("SelectedFileName").value = SelectedFileName;
+        var selectedFileNameInput = document.getElementById("selectedFileName");
+        if (selectedFileNameInput) {
+            // Ustaw wartość pola ukrytego w formularzu
+            selectedFileNameInput.value = SelectedFileName;
+
+            // ... pozostała część funkcji ...
+        } else {
+            console.error("Element with id 'SelectedFileName' not found!");
+        }
 
         // Ustaw ukryte pole z identyfikatorem wybranego zdjęcia
         document.getElementById("selectedPhotoId").value = selectedFileId;
@@ -174,3 +187,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+</body>

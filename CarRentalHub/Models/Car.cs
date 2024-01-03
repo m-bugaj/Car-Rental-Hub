@@ -45,5 +45,7 @@ namespace CarRentalHub.Models
 
         public string? SelectedPhotoId { get; set; }
 
+        public string? SelectedFileName { get; set; }
+
     }
 }
