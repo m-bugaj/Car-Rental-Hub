@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CarRentalHub.Models.Car>
+﻿@model Tuple<IEnumerable<CarRentalHub.Models.Car>, IEnumerable<CarRentalHub.Models.Photo>>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,71 +13,89 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.VehicleBrand)
+                @Html.DisplayNameFor(model => model.Item1.First().VehicleBrand)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CarModel)
+                @Html.DisplayNameFor(model => model.Item1.First().CarModel)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Generation)
+                @Html.DisplayNameFor(model => model.Item1.First().Generation)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BodyType)
+                @Html.DisplayNameFor(model => model.Item1.First().BodyType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.YearOfProduction)
+                @Html.DisplayNameFor(model => model.Item1.First().YearOfProduction)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FuelType)
+                @Html.DisplayNameFor(model => model.Item1.First().FuelType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Mileage)
+                @Html.DisplayNameFor(model => model.Item1.First().Mileage)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.Item1.First().Price)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.UserId)
+                @Html.DisplayNameFor(model => model.Item1.First().UserId)
+            </th>
+            <th>
+                @Html.DisplayName("Main Photo")
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.VehicleBrand)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CarModel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Generation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.BodyType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearOfProduction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FuelType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Mileage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.Item1)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VehicleBrand)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CarModel)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Generation)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BodyType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.YearOfProduction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FuelType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mileage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td>
+                    @{
+                        var mainPhoto = Model.Item2.FirstOrDefault(p => p.AdvertisementId == item.ID && p.IsMainPhoto);
+                    }
+                    @if (mainPhoto != null)
+                    {
+                        <img src="@Url.Content(mainPhoto.ImagePath)" alt="Main Photo" class="img-thumbnail" />
+                        @Html.DisplayFor(modelItem => mainPhoto.ImagePath)
+                    }
+                    else
+                    {
+                        <p>No main photo available for this advertisement.</p>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

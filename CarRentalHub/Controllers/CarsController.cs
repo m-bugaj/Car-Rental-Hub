@@ -33,7 +33,20 @@ namespace CarRentalHub.Controllers
         // GET: Cars
         public async Task<IActionResult> Index()
         {
-            return View(await _context.CarInfoModel.ToListAsync());
+            var mainPhotos = _photoContext.Photo
+                .Where(p => p.IsMainPhoto)
+                .Select(p => new Photo
+                {
+                    ImagePath = p.ImagePath,
+                    AdvertisementId = p.AdvertisementId
+                })
+                .ToList();
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
+                await _context.CarInfoModel.ToListAsync(),
+                await _photoContext.Photo.ToListAsync()
+            );
+            return View(model);
+            // return View(await _context.CarInfoModel.ToListAsync());
         }
 
         // GET: Cars/Details/5
