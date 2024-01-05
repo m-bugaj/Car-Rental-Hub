@@ -64,7 +64,14 @@ namespace CarRentalHub.Controllers
                 return NotFound();
             }
 
-            return View(car);
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
+                await _context.CarInfoModel.ToListAsync(),
+                await _photoContext.Photo.ToListAsync()
+            );
+
+            ViewData["CurrentAdvertisementId"] = id;
+
+            return View(model);
         }
 
         // GET: Cars/Create

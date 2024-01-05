@@ -76,20 +76,34 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.UserId)
                 </td>
+
+
                 <td>
                     @{
                         var mainPhoto = Model.Item2.FirstOrDefault(p => p.AdvertisementId == item.ID && p.IsMainPhoto);
                     }
+
                     @if (mainPhoto != null)
                     {
-                        <img src="@Url.Content(mainPhoto.ImagePath)" alt="Main Photo" class="img-thumbnail" />
-                        @Html.DisplayFor(modelItem => mainPhoto.ImagePath)
+                        var index = mainPhoto.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
+                        if (index != -1)
+                        {
+                            var relativeImagePath = mainPhoto.ImagePath.Substring(index).Replace("\\", "/");
+                            <img src="@Html.Raw(relativeImagePath)" alt="@relativeImagePath" class="img-thumbnail" />
+
+                        }
+                        else
+                        {
+                            <p>No main photo available for this advertisement.</p>
+                        }
                     }
                     else
                     {
                         <p>No main photo available for this advertisement.</p>
                     }
                 </td>
+
+
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
