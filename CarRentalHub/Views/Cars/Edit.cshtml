@@ -1,4 +1,4 @@
-﻿@model CarRentalHub.Models.Car
+﻿@model Tuple<IEnumerable<CarRentalHub.Models.Car>, IEnumerable<CarRentalHub.Models.Photo>>
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,52 +10,109 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="Item1.First().ID" />
             <div class="form-group">
-                <label asp-for="VehicleBrand" class="control-label"></label>
-                <input asp-for="VehicleBrand" class="form-control" />
-                <span asp-validation-for="VehicleBrand" class="text-danger"></span>
+                <label asp-for="Item1.First().VehicleBrand" class="control-label"></label>
+                <input asp-for="Item1.First().VehicleBrand" class="form-control" />
+                <span asp-validation-for="Item1.First().VehicleBrand" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CarModel" class="control-label"></label>
-                <input asp-for="CarModel" class="form-control" />
-                <span asp-validation-for="CarModel" class="text-danger"></span>
+                <label asp-for="Item1.First().CarModel" class="control-label"></label>
+                <input asp-for="Item1.First().CarModel" class="form-control" />
+                <span asp-validation-for="Item1.First().CarModel" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Generation" class="control-label"></label>
-                <input asp-for="Generation" class="form-control" />
-                <span asp-validation-for="Generation" class="text-danger"></span>
+                <label asp-for="Item1.First().Generation" class="control-label"></label>
+                <input asp-for="Item1.First().Generation" class="form-control" />
+                <span asp-validation-for="Item1.First().Generation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="BodyType" class="control-label"></label>
-                <input asp-for="BodyType" class="form-control" />
-                <span asp-validation-for="BodyType" class="text-danger"></span>
+                <label asp-for="Item1.First().BodyType" class="control-label"></label>
+                <input asp-for="Item1.First().BodyType" class="form-control" />
+                <span asp-validation-for="Item1.First().BodyType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="YearOfProduction" class="control-label"></label>
-                <input asp-for="YearOfProduction" class="form-control" />
-                <span asp-validation-for="YearOfProduction" class="text-danger"></span>
+                <label asp-for="Item1.First().YearOfProduction" class="control-label"></label>
+                <input asp-for="Item1.First().YearOfProduction" class="form-control" />
+                <span asp-validation-for="Item1.First().YearOfProduction" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FuelType" class="control-label"></label>
-                <input asp-for="FuelType" class="form-control" />
-                <span asp-validation-for="FuelType" class="text-danger"></span>
+                <label asp-for="Item1.First().FuelType" class="control-label"></label>
+                <input asp-for="Item1.First().FuelType" class="form-control" />
+                <span asp-validation-for="Item1.First().FuelType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Mileage" class="control-label"></label>
-                <input asp-for="Mileage" class="form-control" />
-                <span asp-validation-for="Mileage" class="text-danger"></span>
+                <label asp-for="Item1.First().Mileage" class="control-label"></label>
+                <input asp-for="Item1.First().Mileage" class="form-control" />
+                <span asp-validation-for="Item1.First().Mileage" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="Item1.First().Price" class="control-label"></label>
+                <input asp-for="Item1.First().Price" class="form-control" />
+                <span asp-validation-for="Item1.First().Price" class="text-danger"></span>
             </div>
+            @* <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div> *@
+            <div class="form-group">
+                <label asp-for="Item1.First().Photos" class="control-label">Dodaj nowe zdjęcia</label>
+                <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
+                <span asp-validation-for="Item1.First().Photos" class="text-danger"></span>
+            </div>
+
+            <div id="imagePreview" class="row" onclick="handleThumbnailClick()"></div>
+            <div id="selectedPhoto" class="row mt-3">
+                <label>Wybrane zdjęcie główne:</label>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Item1.First().Photos" class="control-label">Dostępne zdjęcia</label>
+
+                @{
+                    var currentAdvertisementId = ViewData["CurrentAdvertisementId"] as int?;
+                    var photosForAdvertisement = Model.Item2.Where(p => p.AdvertisementId == currentAdvertisementId).ToList();
+                }
+                <div class="row">
+                    @if (photosForAdvertisement.Any())
+                    {
+                        @foreach (var photo in photosForAdvertisement)
+                        {
+                            
+                            @if (photo != null)
+                            {
+                                var index = photo.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
+                                if (index != -1)
+                                {
+                                    var relativeImagePath = photo.ImagePath.Substring(index).Replace("\\", "/");
+                                    <div class="col-md-4">
+                                        <img src="@Html.Raw(relativeImagePath)" data-imgpath="@Url.Content(photo.ImagePath)" alt="Advertisement Image" class="img-thumbnail mb-2" onclick="selectExistingPhoto('@Html.Raw(relativeImagePath)')" />
+                                        <div id="ImagePathId" data-imgpath="@photo.ImagePath"></div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>Photos are not available for this advertisement.</p>
+                                }
+                            }
+                            else
+                            {
+                                <p>Photos are not available for this advertisement.</p>
+                            }
+                           
+                        }
+                    }
+                    
+                </div>
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
+
+            <input type="hidden" id="selectedFileName" name="selectedFileName"  />
+
         </form>
     </div>
 </div>
@@ -63,6 +120,120 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+<script>
+    var selectedFileId = null;
+
+    function previewImages() {
+        var preview = document.getElementById("imagePreview");
+        var files = document.getElementById("photoInput").files;
+
+        preview.innerHTML = "";
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+
+            reader.onload = (function (file, i) {
+                return function (e) {
+                    var fileId = "photo_" + i;
+                    var colDiv = document.createElement("div");
+                    colDiv.className = "col-md-4";
+                    var img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "img-thumbnail";
+                    img.setAttribute("data-file-id", fileId);
+                    img.setAttribute("data-file-name", file.name);
+                    img.onclick = function () {
+                        handleThumbnailClick(fileId);
+                    };
+
+                    colDiv.appendChild(img);
+                    preview.appendChild(colDiv);
+
+                    if (i === 0) {
+                        selectedFileId = fileId;
+                        img.classList.add("selected");
+                        displaySelectedPhoto(fileId);
+                    }
+                };
+            })(file, i);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+
+    function handleThumbnailClick(fileId) {
+        var thumbnails = document.getElementsByClassName("img-thumbnail");
+
+        for (var j = 0; j < thumbnails.length; j++) {
+            thumbnails[j].classList.remove("selected");
+        }
+
+        var clickedThumbnail = document.querySelector('[data-file-id="' + fileId + '"]');
+        clickedThumbnail.classList.add("selected");
+        selectedFileId = fileId;
+        var selectedFileName = clickedThumbnail.getAttribute("data-file-name");
+
+        displaySelectedPhoto(selectedFileId);
+
+        var selectedFileNameInput = document.getElementById("selectedFileName");
+        if (selectedFileNameInput) {
+            selectedFileNameInput.value = selectedFileName;
+        } else {
+            console.error("Element with id 'selectedFileName' not found!");
+        }
+
+        document.getElementById("selectedPhotoId").value = selectedFileId;
+    }
+
+    function displaySelectedPhoto(fileId) {
+        var selectedPhotoDiv = document.getElementById("selectedPhoto");
+        selectedPhotoDiv.innerHTML = "";
+
+        var label = document.createElement("label");
+        label.textContent = "Wybrane zdjęcie główne:";
+        selectedPhotoDiv.appendChild(label);
+
+        var selectedPhoto = document.createElement("img");
+        selectedPhoto.src = document.querySelector('[data-file-id="' + fileId + '"]').src;
+        selectedPhoto.className = "img-thumbnail";
+        selectedPhotoDiv.appendChild(selectedPhoto);
+    }
+
+    function selectExistingPhoto(src) {
+        var preview = document.getElementById("selectedPhoto");
+
+        // Usuń poprzednio wybrane zdjęcie
+        preview.innerHTML = "";
+
+        // Dodaj etykietę "Wybrane zdjęcie główne"
+        var label = document.createElement("label");
+        label.textContent = "Wybrane zdjęcie główne:";
+        preview.appendChild(label);
+
+        // Dodaj nowe wybrane zdjęcie
+        var img = document.createElement("img");
+        img.src = src;
+        img.className = "img-thumbnail";
+        preview.appendChild(img);
+
+        // Pobierz wartość data-imgpath
+        var imgPath = document.getElementById("ImagePathId").getAttribute("data-imgpath");
+        var selectedFileNameInput = document.getElementById("selectedFileName");
+        if (selectedFileNameInput) {
+            selectedFileNameInput.value = imgPath;
+            console.error(imgPath);
+        } else {
+            console.error("Element with id 'selectedFileName' not found!");
+        }
+    }
+
+
+</script>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

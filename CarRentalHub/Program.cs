@@ -20,6 +20,8 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<FilterDataContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FilterDataContext") ?? throw new InvalidOperationException("Connection string 'FilterDataContext' not found.")));
 builder.Services.AddDbContext<PhotoContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("PhotoContext") ?? throw new InvalidOperationException("Connection string 'PhotoContext' not found.")));
 

@@ -11,6 +11,10 @@
     "mssql3": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:PhotoContext"
+    },
+    "mssql4": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:FilterDataContext"
     }
   }
 }

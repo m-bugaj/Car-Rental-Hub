@@ -31,8 +31,11 @@ namespace CarRentalHub.Controllers
         }
 
         // GET: Cars
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string selectedMarka, string selectedModel)
         {
+            // Pobierz samochody na podstawie wybranych marek i modeli z bazy danych
+            var filteredCars = GetCarsByMarkaAndModel(selectedMarka, selectedModel);
+
             var mainPhotos = _photoContext.Photo
                 .Where(p => p.IsMainPhoto)
                 .Select(p => new Photo
@@ -41,12 +44,43 @@ namespace CarRentalHub.Controllers
                     AdvertisementId = p.AdvertisementId
                 })
                 .ToList();
-            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
-                await _context.CarInfoModel.ToListAsync(),
-                await _photoContext.Photo.ToListAsync()
-            );
-            return View(model);
+
+            if (!filteredCars.Any())
+            {
+                var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
+                    await _context.CarInfoModel.ToListAsync(),
+                    await _photoContext.Photo.ToListAsync()
+                    );
+                return View(model);
+            }
+            else
+            {
+                var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
+                    filteredCars.ToList(),
+                    await _photoContext.Photo.ToListAsync()
+                    );
+                return View(model);
+            }
+
             // return View(await _context.CarInfoModel.ToListAsync());
+        }
+
+        private IQueryable<Car> GetCarsByMarkaAndModel(string selectedMarka, string selectedModel)
+        {
+            // Pobierz samochody z bazy danych na podstawie wybranych marek i modeli
+            var cars = _context.CarInfoModel.AsQueryable();
+
+            if (!string.IsNullOrEmpty(selectedMarka))
+            {
+                cars = cars.Where(c => c.VehicleBrand == selectedMarka);
+            }
+
+            if (!string.IsNullOrEmpty(selectedModel))
+            {
+                cars = cars.Where(c => c.CarModel == selectedModel);
+            }
+
+            return cars;
         }
 
         // GET: Cars/Details/5
@@ -107,7 +141,144 @@ namespace CarRentalHub.Controllers
                     Console.WriteLine("MELO");
 
                     var photoCount = 0;
+
+                    foreach (var photo in car.Photos)
+                    {
+                        Console.WriteLine("ELO");
+                        Console.WriteLine(photo.FileName);
+                        Console.WriteLine(car.SelectedFileName);
+                        // Sprawdź, czy plik został przesłany
+                        if (photo.Length > 0)
+                        {
+                            // Wygeneruj unikalną nazwę pliku (możesz użyć GUID)
+                            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(photo.FileName);
+
+                            // Określ lokalizację, gdzie zostanie zapisane zdjęcie (np. w folderze wwwroot/images)
+                            var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+                            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                            // Zapisz plik na dysku
+                            using (var fileStream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await photo.CopyToAsync(fileStream);
+                            }
+
+                            // Tutaj możesz zapisać ścieżkę do zdjęcia w bazie danych
+                            // Przykładowo, dodaj kolumnę do modelu Car i zapisz ścieżkę
+                            // car.PhotoPath = "/images/" + uniqueFileName;
+  
+                            _photoContext.Photo.Add(new Photo
+                            {
+                                ImagePath = filePath,
+                                IsMainPhoto = (photo.FileName == car.SelectedFileName) || (photoCount == 0 && car.SelectedFileName == null), // IsMainPhoto Setting
+                                AdvertisementId = car.ID
+                            });
+                            photoCount++;
+                        }
+                    }
+                    // Zapisz zmiany w bazie danych
+                    await _photoContext.SaveChangesAsync();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(car);
+        }
+
+
+
+        // GET: Cars/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = await _context.CarInfoModel.FindAsync(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
+                await _context.CarInfoModel.ToListAsync(),
+                await _photoContext.Photo.ToListAsync()
+            );
+
+            ViewData["CurrentAdvertisementId"] = id;
+
+            return View(model);
+        }
+
+        // POST: Cars/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId,SelectedFileName")] Car car)
+        {
+            if (id != car.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // Get logged in user
+                    var user = await _userManager.GetUserAsync(User);
+
+                    // Assign UserId before adding to the database context
+                    car.UserId = user.Id;
+
+                    _context.Update(car);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CarExists(car.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                Console.WriteLine(car.SelectedFileName);
+                // Przetwarzanie jeżeli zostało zmienione zdjęcie główne bez przesłania plików
+
+                // Pobierz wszystkie rekordy dla AdvertisementId = car.ID
+                var previousMainPhoto = _photoContext.Photo.FirstOrDefault(p => p.AdvertisementId == car.ID && p.IsMainPhoto);
+                var newMainPhoto = _photoContext.Photo.FirstOrDefault(p => p.AdvertisementId == car.ID && p.ImagePath == car.SelectedFileName);
+
+                if (previousMainPhoto != null && car.SelectedFileName != previousMainPhoto.ImagePath && car.SelectedFileName != null && newMainPhoto != null)
+                {
+                    previousMainPhoto.IsMainPhoto = false;
+                    newMainPhoto.IsMainPhoto = true;
+
+                    await _photoContext.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
+
+                // Przetwarzanie przesyłanych plików
+                if (car.Photos != null && car.Photos.Count > 0)
+                {
+                    Console.WriteLine("MELO");
+
+                    var photoCount = 0;
                     bool _isMainPhoto = false;
+
+                    // Pobierz wszystkie rekordy dla AdvertisementId = car.ID
+                    var photosToDelete = _photoContext.Photo.Where(p => p.AdvertisementId == car.ID);
+
+                    // Usuń wszystkie znalezione rekordy
+                    _photoContext.Photo.RemoveRange(photosToDelete);
 
                     foreach (var photo in car.Photos)
                     {
@@ -152,60 +323,7 @@ namespace CarRentalHub.Controllers
                     await _photoContext.SaveChangesAsync();
                 }
 
-                return RedirectToAction(nameof(Index));
-            }
 
-            return View(car);
-        }
-
-
-
-        // GET: Cars/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var car = await _context.CarInfoModel.FindAsync(id);
-            if (car == null)
-            {
-                return NotFound();
-            }
-            return View(car);
-        }
-
-        // POST: Cars/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price")] Car car)
-        {
-            if (id != car.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(car);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CarExists(car.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
             return View(car);
