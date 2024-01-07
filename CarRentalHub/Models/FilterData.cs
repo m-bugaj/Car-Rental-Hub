@@ -11,5 +11,8 @@ namespace CarRentalHub.Models
 
         [Display(Name = "Model pojazdu")]
         public string CarModel { get; set; }
+
+        [Display(Name = "Generacja")]
+        public string Generation { get; set; }
     }
 }

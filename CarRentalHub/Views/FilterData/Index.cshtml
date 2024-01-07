@@ -49,8 +49,9 @@ else
         <div class="col-md-2">
             <div class="form-group">
                 <label for="selectedMarka" class="form-label">Marka pojazdu:</label>
-                <div class="col-md-7">
+                <div class="col-md-10">
                     <select id="selectedMarka" name="selectedMarka" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Wybierz markę</option>
                         @if (ViewBag.DostepneMarki != null)
                         {
                             foreach (var marka in ViewBag.DostepneMarki)
@@ -66,8 +67,19 @@ else
         <div class="col-md-2">
             <div class="form-group">
                 <label for="selectedModel" class="form-label">Model pojazdu:</label>
-                <div class="col-md-7">
+                <div class="col-md-10">
                     <select id="selectedModel" name="selectedModel" class="form-control custom-select" style="height: 60px;">
+                        <!-- Modele zostaną automatycznie uzupełnione po zmianie wybranej marki -->
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="selectedGeneration" class="form-label">Generacja:</label>
+                <div class="col-md-10">
+                    <select id="selectedGeneration" name="selectedGeneration" class="form-control custom-select" style="height: 60px;">
                         <!-- Modele zostaną automatycznie uzupełnione po zmianie wybranej marki -->
                     </select>
                 </div>
@@ -93,10 +105,21 @@ else
             // Pobierz wartość wybranej marki
             var selectedMarka = $(this).val();
 
+            // Jeśli wybrano markę, usuń domyślną opcję
+            if (selectedMarka) {
+                $('#selectedMarka option[value=""]').remove();
+            }
+
             // Wywołaj akcję w kontrolerze, aby uzyskać modele dla danej marki
             $.getJSON('/FilterData/PobierzModele', { marka: selectedMarka }, function (data) {
                 // Wyczyść istniejące opcje w selectedModel
                 $('#selectedModel').empty();
+
+                // Dodaj domyślną opcję do selectedModel
+                $('#selectedModel').append($('<option>', {
+                    value: '',
+                    text: 'Wybierz model'
+                }));
 
                 // Dodaj nowe opcje do selectedModel
                 $.each(data, function (index, model) {
@@ -108,7 +131,42 @@ else
             });
         });
 
+        // Obsługa zdarzenia zmiany wyboru dla selectedModel
+        $('#selectedModel').change(function () {
+            // Pobierz wartość wybranego modelu
+            var selectedModel = $(this).val();
+
+            // Jeśli wybrano model, usuń domyślną opcję
+            if (selectedModel) {
+                $('#selectedModel option[value=""]').remove();
+            }
+
+            // Wywołaj akcję w kontrolerze, aby uzyskać generacje dla danego modelu
+            $.getJSON('/FilterData/GetGeneration', { carModel: selectedModel }, function (data) {
+                // Wyczyść istniejące opcje w selectedGeneration
+                $('#selectedGeneration').empty();
+
+                // Dodaj domyślną opcję do selectedGeneration
+                $('#selectedGeneration').append($('<option>', {
+                    value: '',
+                    text: 'Wybierz generację'
+                }));
+
+                // Dodaj nowe opcje do selectedGeneration
+                $.each(data, function (index, generation) {
+                    $('#selectedGeneration').append($('<option>', {
+                        value: generation,
+                        text: generation
+                    }));
+                });
+            });
+        });
+
         // Wywołaj zdarzenie zmiany po załadowaniu strony, aby zainicjować dostępne modele
         $('#selectedMarka').change();
+
+        // Wywołaj zdarzenie zmiany po załadowaniu strony, aby zainicjować dostępne generacje
+        $('#selectedModel').change();
     });
 </script>
+

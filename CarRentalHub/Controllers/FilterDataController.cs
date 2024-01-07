@@ -24,6 +24,9 @@ namespace CarRentalHub.Controllers
             // Pobierz dostępne modele dla pierwszej marki
             ViewBag.DostepneModele = PobierzModeleZBazy(pierwszaMarka);
 
+            var firstCarModel = (ViewBag.DostepneModele as List<SelectListItem>)?.FirstOrDefault()?.Value;
+            ViewBag.AvailableGenerations = GetGenerationFromDatabase(firstCarModel);
+
             return View();
         }
 
@@ -62,6 +65,21 @@ namespace CarRentalHub.Controllers
             return _context.FilterData
                 .Where(m => m.VehicleBrand == marka)
                 .Select(m => m.CarModel)
+                .Distinct()
+                .ToList();
+        }
+
+        public JsonResult GetGeneration(string carModel)
+        {
+            var generation = GetGenerationFromDatabase(carModel);
+            return Json(generation);
+        }
+
+        private List<string> GetGenerationFromDatabase(string carModel)
+        {
+            return _context.FilterData
+                .Where(m => m.CarModel == carModel)
+                .Select(m => m.Generation)
                 .Distinct()
                 .ToList();
         }
