@@ -87,8 +87,7 @@
                                 {
                                     var relativeImagePath = photo.ImagePath.Substring(index).Replace("\\", "/");
                                     <div class="col-md-4">
-                                        <img src="@Html.Raw(relativeImagePath)" data-imgpath="@Url.Content(photo.ImagePath)" alt="Advertisement Image" class="img-thumbnail mb-2" onclick="selectExistingPhoto('@Html.Raw(relativeImagePath)')" />
-                                        <div id="ImagePathId" data-imgpath="@photo.ImagePath"></div>
+                                        <img src="@Html.Raw(relativeImagePath)" data-imgpath="@Url.Content(photo.ImagePath)" alt="Advertisement Image" class="img-thumbnail mb-2" onclick="selectExistingPhoto(this)" />
                                     </div>
                                 }
                                 else
@@ -203,7 +202,7 @@
         selectedPhotoDiv.appendChild(selectedPhoto);
     }
 
-    function selectExistingPhoto(src) {
+    function selectExistingPhoto(clickedImg) {
         var preview = document.getElementById("selectedPhoto");
 
         // Usuń poprzednio wybrane zdjęcie
@@ -216,12 +215,12 @@
 
         // Dodaj nowe wybrane zdjęcie
         var img = document.createElement("img");
-        img.src = src;
+        img.src = clickedImg.src;
         img.className = "img-thumbnail";
         preview.appendChild(img);
 
-        // Pobierz wartość data-imgpath
-        var imgPath = document.getElementById("ImagePathId").getAttribute("data-imgpath");
+        // Pobierz wartość data-imgpath bezpośrednio z klikniętego obrazu
+        var imgPath = clickedImg.getAttribute("data-imgpath");
         var selectedFileNameInput = document.getElementById("selectedFileName");
         if (selectedFileNameInput) {
             selectedFileNameInput.value = imgPath;

@@ -256,8 +256,14 @@ namespace CarRentalHub.Controllers
                 var previousMainPhoto = _photoContext.Photo.FirstOrDefault(p => p.AdvertisementId == car.ID && p.IsMainPhoto);
                 var newMainPhoto = _photoContext.Photo.FirstOrDefault(p => p.AdvertisementId == car.ID && p.ImagePath == car.SelectedFileName);
 
+                Console.WriteLine(previousMainPhoto);
+                Console.WriteLine(car.SelectedFileName);
+                Console.WriteLine(previousMainPhoto.ImagePath);
+                Console.WriteLine(newMainPhoto);
+
                 if (previousMainPhoto != null && car.SelectedFileName != previousMainPhoto.ImagePath && car.SelectedFileName != null && newMainPhoto != null)
                 {
+                    Console.WriteLine("MELO");
                     previousMainPhoto.IsMainPhoto = false;
                     newMainPhoto.IsMainPhoto = true;
 
