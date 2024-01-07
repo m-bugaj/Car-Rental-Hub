@@ -86,8 +86,53 @@ else
             </div>
         </div>
 
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="selectedYearFrom" class="form-label">Rok produkcji od:</label>
+                <div class="col-md-10">
+                    <select id="selectedYearFrom" name="selectedYearFrom" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Rok produkcji od</option>
+                        @foreach (var year in ViewBag.AvailableYears)
+                        {
+                            <option value="@year">@year</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="selectedYearTo" class="form-label">Rok produkcji do:</label>
+                <div class="col-md-10">
+                    <select id="selectedYearTo" name="selectedYearTo" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Rok produkcji do</option>
+                        @foreach (var year in ViewBag.AvailableYears)
+                        {
+                            <option value="@year">@year</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="selectedBodyType" class="form-label">Typ nadwozia:</label>
+                <div class="col-md-10">
+                    <select id="selectedBodyType" name="selectedBodyType" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Typ nadwozia</option>
+                        @foreach (var bodyType in ViewBag.BodyType)
+                        {
+                            <option value="@bodyType">@bodyType</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
             <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Szukaj" class="btn btn-primary" />
             </div>
 
     </div>

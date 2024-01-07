@@ -31,10 +31,10 @@ namespace CarRentalHub.Controllers
         }
 
         // GET: Cars
-        public async Task<IActionResult> Index(string selectedMarka, string selectedModel)
+        public async Task<IActionResult> Index(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType)
         {
             // Pobierz samochody na podstawie wybranych marek i modeli z bazy danych
-            var filteredCars = GetCarsByMarkaAndModel(selectedMarka, selectedModel);
+            var filteredCars = GetFilteredCars(selectedMarka, selectedModel, selectedGeneration, selectedYearFrom, selectedYearTo, selectedBodyType);
 
             var mainPhotos = _photoContext.Photo
                 .Where(p => p.IsMainPhoto)
@@ -65,7 +65,7 @@ namespace CarRentalHub.Controllers
             // return View(await _context.CarInfoModel.ToListAsync());
         }
 
-        private IQueryable<Car> GetCarsByMarkaAndModel(string selectedMarka, string selectedModel)
+        private IQueryable<Car> GetFilteredCars(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType)
         {
             // Pobierz samochody z bazy danych na podstawie wybranych marek i modeli
             var cars = _context.CarInfoModel.AsQueryable();
@@ -78,6 +78,26 @@ namespace CarRentalHub.Controllers
             if (!string.IsNullOrEmpty(selectedModel))
             {
                 cars = cars.Where(c => c.CarModel == selectedModel);
+            }
+
+            if (!string.IsNullOrEmpty(selectedGeneration))
+            {
+                cars = cars.Where(c => c.Generation == selectedGeneration);
+            }
+
+            if (selectedYearFrom != null)
+            {
+                cars = cars.Where(c => c.YearOfProduction >= selectedYearFrom);
+            }
+
+            if (selectedYearTo != null)
+            {
+                cars = cars.Where(c => c.YearOfProduction <= selectedYearTo);
+            }
+
+            if (!string.IsNullOrEmpty(selectedBodyType))
+            {
+                cars = cars.Where(c => c.BodyType == selectedBodyType);
             }
 
             return cars;
@@ -111,7 +131,11 @@ namespace CarRentalHub.Controllers
         // GET: Cars/Create
         public IActionResult Create()
         {
-            var model = new Car
+			// Typ nadwozia
+			List<string> bodyType = new List<string> { "Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv" };
+			ViewBag.BodyType = bodyType.Select(item => new SelectListItem { Text = item, Value = item }).ToList();
+
+			var model = new Car
             {
                 YearsList = Enumerable.Range(1900, DateTime.Now.Year - 1899).Reverse().ToList()
             };

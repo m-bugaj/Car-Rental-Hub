@@ -24,8 +24,17 @@ namespace CarRentalHub.Controllers
             // Pobierz dostępne modele dla pierwszej marki
             ViewBag.DostepneModele = PobierzModeleZBazy(pierwszaMarka);
 
+            // Generacje
             var firstCarModel = (ViewBag.DostepneModele as List<SelectListItem>)?.FirstOrDefault()?.Value;
             ViewBag.AvailableGenerations = GetGenerationFromDatabase(firstCarModel);
+
+            // Lata
+            var years = Enumerable.Range(1900, DateTime.Now.Year - 1899).OrderByDescending(y => y).ToList();
+            ViewBag.AvailableYears = years;
+
+            // Typ nadwozia
+            List<string> bodyType = ["Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv"];
+            ViewBag.BodyType = bodyType;
 
             return View();
         }
