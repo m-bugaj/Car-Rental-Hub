@@ -1,4 +1,4 @@
-﻿@model Tuple<IEnumerable<CarRentalHub.Models.Car>, IEnumerable<CarRentalHub.Models.Photo>>
+﻿@model Tuple<CarRentalHub.Models.Car, IEnumerable<CarRentalHub.Models.Photo>>
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,54 +12,54 @@
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Item1.First().ID" />
+            <input type="hidden" asp-for="Item1.ID" />
             <div class="form-group">
-                <label asp-for="Item1.First().VehicleBrand" class="control-label"></label>
-                <input asp-for="Item1.First().VehicleBrand" class="form-control" />
-                <span asp-validation-for="Item1.First().VehicleBrand" class="text-danger"></span>
+                <label asp-for="Item1.VehicleBrand" class="control-label"></label>
+                <input asp-for="Item1.VehicleBrand" class="form-control" />
+                <span asp-validation-for="Item1.VehicleBrand" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().CarModel" class="control-label"></label>
-                <input asp-for="Item1.First().CarModel" class="form-control" />
-                <span asp-validation-for="Item1.First().CarModel" class="text-danger"></span>
+                <label asp-for="Item1.CarModel" class="control-label"></label>
+                <input asp-for="Item1.CarModel" class="form-control" />
+                <span asp-validation-for="Item1.CarModel" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().Generation" class="control-label"></label>
-                <input asp-for="Item1.First().Generation" class="form-control" />
-                <span asp-validation-for="Item1.First().Generation" class="text-danger"></span>
+                <label asp-for="Item1.Generation" class="control-label"></label>
+                <input asp-for="Item1.Generation" class="form-control" />
+                <span asp-validation-for="Item1.Generation" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().BodyType" class="control-label"></label>
-                <input asp-for="Item1.First().BodyType" class="form-control" />
-                <span asp-validation-for="Item1.First().BodyType" class="text-danger"></span>
+                <label asp-for="Item1.BodyType" class="control-label"></label>
+                <input asp-for="Item1.BodyType" class="form-control" />
+                <span asp-validation-for="Item1.BodyType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().YearOfProduction" class="control-label"></label>
-                <input asp-for="Item1.First().YearOfProduction" class="form-control" />
-                <span asp-validation-for="Item1.First().YearOfProduction" class="text-danger"></span>
+                <label asp-for="Item1.YearOfProduction" class="control-label"></label>
+                <input asp-for="Item1.YearOfProduction" class="form-control" />
+                <span asp-validation-for="Item1.YearOfProduction" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().FuelType" class="control-label"></label>
-                <input asp-for="Item1.First().FuelType" class="form-control" />
-                <span asp-validation-for="Item1.First().FuelType" class="text-danger"></span>
+                <label asp-for="Item1.FuelType" class="control-label"></label>
+                <input asp-for="Item1.FuelType" class="form-control" />
+                <span asp-validation-for="Item1.FuelType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().Mileage" class="control-label"></label>
-                <input asp-for="Item1.First().Mileage" class="form-control" />
-                <span asp-validation-for="Item1.First().Mileage" class="text-danger"></span>
+                <label asp-for="Item1.Mileage" class="control-label"></label>
+                <input asp-for="Item1.Mileage" class="form-control" />
+                <span asp-validation-for="Item1.Mileage" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.First().Price" class="control-label"></label>
-                <input asp-for="Item1.First().Price" class="form-control" />
-                <span asp-validation-for="Item1.First().Price" class="text-danger"></span>
+                <label asp-for="Item1.Price" class="control-label"></label>
+                <input asp-for="Item1.Price" class="form-control" />
+                <span asp-validation-for="Item1.Price" class="text-danger"></span>
             </div>
             @* <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div> *@
             <div class="form-group">
-                <label asp-for="Item1.First().Photos" class="control-label">Dodaj nowe zdjęcia</label>
+                <label asp-for="Item1.Photos" class="control-label">Dodaj nowe zdjęcia</label>
                 <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
-                <span asp-validation-for="Item1.First().Photos" class="text-danger"></span>
+                <span asp-validation-for="Item1.Photos" class="text-danger"></span>
             </div>
 
             <div id="imagePreview" class="row" onclick="handleThumbnailClick()"></div>
@@ -68,7 +68,7 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Item1.First().Photos" class="control-label">Dostępne zdjęcia</label>
+                <label asp-for="Item1.Photos" class="control-label">Dostępne zdjęcia</label>
 
                 @{
                     var currentAdvertisementId = ViewData["CurrentAdvertisementId"] as int?;

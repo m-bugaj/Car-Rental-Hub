@@ -36,6 +36,10 @@ namespace CarRentalHub.Controllers
             List<string> bodyType = ["Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv"];
             ViewBag.BodyType = bodyType;
 
+            // Typ paliwa
+            List<string> fuelType = ["Benzyna", "Benzyna+CNG", "Benzyna+LPG", "Diesel", "Elektryczny", "Etanol", "Hybryda", "Wodór"];
+            ViewBag.FuelType = fuelType;
+
             return View();
         }
 

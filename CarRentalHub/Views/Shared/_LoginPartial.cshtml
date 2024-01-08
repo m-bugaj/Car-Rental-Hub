@@ -4,6 +4,12 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+</head>
+
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
@@ -15,6 +21,12 @@
             <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
         </form>
     </li>
+    <li>
+            <a class="nav-link text-light rounded" asp-area="" asp-controller="Cars" asp-action="Create" style="background-color: #51e2f5;">
+                <i class="fas fa-plus"></i> Dodaj ogłoszenie
+            </a>
+    </li>
+
 }
 else
 {

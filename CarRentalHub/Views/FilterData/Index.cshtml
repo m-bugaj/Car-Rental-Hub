@@ -131,6 +131,57 @@ else
             </div>
         </div>
 
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="selectedFuelType" class="form-label">Typ paliwa:</label>
+                <div class="col-md-10">
+                    <select id="selectedFuelType" name="selectedFuelType" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Typ paliwa</option>
+                        @foreach (var fuelType in ViewBag.FuelType)
+                        {
+                            <option value="@fuelType">@fuelType</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="MileageFrom" class="form-label">Przebieg od: (km)</label>
+                <div class="col-md-10">
+                    <input id="MileageFrom" name="MileageFrom" class="form-control custom-select" style="height: 60px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="MileageTo" class="form-label">Przebieg do: (km)</label>
+                <div class="col-md-10">
+                    <input id="MileageTo" name="MileageTo" class="form-control custom-select" style="height: 60px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="PriceFrom" class="form-label">Cena od: (PLN)</label>
+                <div class="col-md-10">
+                    <input id="PriceFrom" name="PriceFrom" class="form-control custom-select" style="height: 60px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="PriceTo" class="form-label">Cena do: (PLN)</label>
+                <div class="col-md-10">
+                    <input id="PriceTo" name="PriceTo" class="form-control custom-select" style="height: 60px;">
+                </div>
+            </div>
+        </div>
+
             <div class="form-group mt-3">
                 <input type="submit" value="Szukaj" class="btn btn-primary" />
             </div>

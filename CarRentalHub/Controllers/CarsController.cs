@@ -31,10 +31,10 @@ namespace CarRentalHub.Controllers
         }
 
         // GET: Cars
-        public async Task<IActionResult> Index(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType)
+        public async Task<IActionResult> Index(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType, string selectedFuelType, int? MileageFrom, int? MileageTo, int? PriceFrom, int? PriceTo)
         {
             // Pobierz samochody na podstawie wybranych marek i modeli z bazy danych
-            var filteredCars = GetFilteredCars(selectedMarka, selectedModel, selectedGeneration, selectedYearFrom, selectedYearTo, selectedBodyType);
+            var filteredCars = GetFilteredCars(selectedMarka, selectedModel, selectedGeneration, selectedYearFrom, selectedYearTo, selectedBodyType, selectedFuelType, MileageFrom, MileageTo, PriceFrom, PriceTo);
 
             var mainPhotos = _photoContext.Photo
                 .Where(p => p.IsMainPhoto)
@@ -65,7 +65,7 @@ namespace CarRentalHub.Controllers
             // return View(await _context.CarInfoModel.ToListAsync());
         }
 
-        private IQueryable<Car> GetFilteredCars(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType)
+        private IQueryable<Car> GetFilteredCars(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType, string selectedFuelType, int? MileageFrom, int? MileageTo, int? PriceFrom, int? PriceTo)
         {
             // Pobierz samochody z bazy danych na podstawie wybranych marek i modeli
             var cars = _context.CarInfoModel.AsQueryable();
@@ -99,6 +99,32 @@ namespace CarRentalHub.Controllers
             {
                 cars = cars.Where(c => c.BodyType == selectedBodyType);
             }
+            
+            if (!string.IsNullOrEmpty(selectedFuelType))
+            {
+                cars = cars.Where(c => c.FuelType == selectedFuelType);
+            }
+            
+            if (MileageFrom != null)
+            {
+                cars = cars.Where(c => c.Mileage >= MileageFrom);
+            }
+
+            if (MileageTo != null)
+            {
+                cars = cars.Where(c => c.Mileage <= MileageTo);
+            }
+
+            if (PriceFrom != null)
+            {
+                cars = cars.Where(c => c.Price >= PriceFrom);
+            }
+
+            if (PriceTo != null)
+            {
+                cars = cars.Where(c => c.Price <= PriceTo);
+            }
+
 
             return cars;
         }
@@ -226,8 +252,15 @@ namespace CarRentalHub.Controllers
                 return NotFound();
             }
 
-            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
-                await _context.CarInfoModel.ToListAsync(),
+            // Ustawienie dostępu do edycji ogłoszenia
+            var userId = _userManager.GetUserId(User);
+            if (car.UserId != userId)
+            {
+                return Forbid(); // Możesz również użyć return Unauthorized();
+            }
+
+            var model = new Tuple<Car, IEnumerable<Photo>>(
+                car,
                 await _photoContext.Photo.ToListAsync()
             );
 
@@ -372,6 +405,13 @@ namespace CarRentalHub.Controllers
             if (car == null)
             {
                 return NotFound();
+            }
+
+            // Ustawienie dostępu do edycji ogłoszenia
+            var userId = _userManager.GetUserId(User);
+            if (car.UserId != userId)
+            {
+                return Forbid(); // Możesz również użyć return Unauthorized();
             }
 
             return View(car);
