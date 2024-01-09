@@ -12,6 +12,7 @@ namespace CarRentalHub.Data
         public CarRentalHubContext (DbContextOptions<CarRentalHubContext> options)
             : base(options)
         {
+            ChangeTracker.LazyLoadingEnabled = true;
         }
 
         public DbSet<CarRentalHub.Models.Car> CarInfoModel { get; set; } = default!;

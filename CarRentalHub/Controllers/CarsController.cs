@@ -22,6 +22,7 @@ namespace CarRentalHub.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PhotoContext _photoContext;
 
+
         public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, PhotoContext photoContext)
         {
             _context = context;

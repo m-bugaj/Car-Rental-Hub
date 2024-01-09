@@ -75,6 +75,42 @@ namespace CarRentalHub.Migrations
 
                     b.ToTable("CarInfoModel");
                 });
+
+            modelBuilder.Entity("CarRentalHub.Models.Reservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CarID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarID");
+
+                    b.ToTable("Reservation");
+                });
+
+            modelBuilder.Entity("CarRentalHub.Models.Reservation", b =>
+                {
+                    b.HasOne("CarRentalHub.Models.Car", null)
+                        .WithMany("Reservations")
+                        .HasForeignKey("CarID");
+                });
+
+            modelBuilder.Entity("CarRentalHub.Models.Car", b =>
+                {
+                    b.Navigation("Reservations");
+                });
 #pragma warning restore 612, 618
         }
     }
