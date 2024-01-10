@@ -15,6 +15,10 @@
     "mssql4": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:FilterDataContext"
+    },
+    "mssql5": {
+      "type": "mssql.local",
+      "connectionId": "ConnectionStrings:CarAvailabilityContext"
     }
   }
 }

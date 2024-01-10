@@ -15,6 +15,10 @@
     "mssql4": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:FilterDataContext"
+    },
+    "mssql5": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:CarAvailabilityContext"
     }
   }
 }

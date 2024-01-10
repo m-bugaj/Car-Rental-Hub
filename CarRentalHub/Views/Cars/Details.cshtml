@@ -4,6 +4,12 @@
     ViewData["Title"] = "Details";
 }
 
+<style>
+    .gray-button {
+        background-color: gray !important;
+    }
+</style>
+
 <h1>Details</h1>
 
 
@@ -12,74 +18,221 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<input type="text" name="daterange" class="form-control" value="01/01/2018 - 01/15/2018" />
 
-<script>
-    $(function () {
-        $('input[name="daterange"]').daterangepicker({
-            opens: 'left'
-        }, function (start, end, label) {
-            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+<div class="row">
+    
+        <h4>Car</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().VehicleBrand)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().VehicleBrand)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().CarModel)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().CarModel)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().Generation)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().Generation)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().BodyType)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().BodyType)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().YearOfProduction)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().YearOfProduction)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().FuelType)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().FuelType)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().Mileage)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().Mileage)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Item1.First().Price)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Item1.First().Price)
+            </dd>
+        </dl>
+
+    <div class="col-9 col-sm-7 col-md-5 col-lm-6 text-center">
+        <div class="border rounded-3 p-4" style="background-color: white; border-color: #8458B3;">
+            <label for="datePicker" class="text-dark" style="font-size: 18px;">Wybierz datę rezerwacji</label>
+            <div class="input-group mt-3">
+                <input type="text" name="daterange" class="form-control text-center" placeholder="Wybierz datę rezerwacji" id="datePicker" readonly />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="calendarIcon">
+                        <i class="fas fa-calendar"></i>
+                    </button>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("AddAvailability", "Cars", FormMethod.Post, new { id = "availabilityForm" }))
+            {
+                <input type="hidden" name="carId" value="@ViewBag.CurrentAdvertisementId" />
+                <input type="hidden" id="startDateInput" name="startDate" />
+                <input type="hidden" id="endDateInput" name="endDate" />
+
+                <button type="button" class="btn btn-primary mt-3" style="background-color: gray; padding: 15px 30px; border: none;" disabled onclick="showConfirmationModal()">Rezerwuj!</button>
+            }
+
+            <!-- Modal -->
+            <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="confirmationModalLabel">Potwierdzenie rezerwacji</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: gray; border: none; background-color: white;" onclick="closeConfirmationModal()">
+                                <span aria-hidden="true" class="fas fa-times" style="color: gray; border: none; background-color: none;"></span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            Czy na pewno chcesz zarezerwować samochód na dany termin?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeConfirmationModal()">Anuluj</button>
+                            <button type="button" class="btn btn-primary" style="border: none;" onclick="confirmReservation()">Rezerwuj</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+        function showConfirmationModal() {
+            $('#confirmationModal').modal('show');
+        }
+
+        function closeConfirmationModal() {
+            $('#confirmationModal').modal('hide');
+        }
+
+        function confirmReservation() {
+            // Przesłanie formularza
+            document.getElementById("availabilityForm").submit();
+        }
+    </script>
+
+
+    <script>
+        $(function () {
+            var niedostepneDaty = @Html.Raw(Json.Serialize(ViewBag.NiedostepneDaty));
+
+            // Znajdź najbliższą dostępną datę spośród najbliższych 3 dni
+            var now = moment();
+            var najblizszaDostepnaData = null;
+
+            for (var i = 0; i < 3; i++) {
+                var potencjalnaData = now.clone().add(i, 'days');
+                var potencjalnaDataString = potencjalnaData.format('YYYY-MM-DD');
+
+                if (!niedostepneDaty.includes(potencjalnaDataString)) {
+                    najblizszaDostepnaData = potencjalnaData;
+                    break;
+                }
+            }
+
+            // Ustaw domyślny zakres dat na najbliższe dostępne 3 dni
+            var defaultStartDate = najblizszaDostepnaData ? najblizszaDostepnaData.format('MM/DD/YYYY') : now.format('MM/DD/YYYY');
+            var defaultEndDate = najblizszaDostepnaData ? najblizszaDostepnaData.clone().add(2, 'days').format('MM/DD/YYYY') : now.clone().add(2, 'days').format('MM/DD/YYYY');
+
+            $('input[name="daterange"]').daterangepicker({
+                opens: 'left',
+                startDate: defaultStartDate,
+                endDate: defaultEndDate,
+                isInvalidDate: function (date) {
+                    // Sprawdź, czy data jest niedostępna
+                    var stringDate = date.format('YYYY-MM-DD');
+                    return niedostepneDaty.includes(stringDate) || isDateOverlap(date);
+                }
+            }, function (start, end, label) {
+                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                $('.btn-primary').prop('disabled', false).css('background-color', '#d0bdf4');
+            });
+
+
+            // Dodaj obsługę zdarzenia kliknięcia na ikonkę kalendarza
+            $('#calendarIcon').click(function () {
+                $('input[name="daterange"]').trigger('focus');
+            });
+
+            function isDateOverlap(selectedDateRange) {
+                // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
+                var selectedStartDate = selectedDateRange.start;
+                var selectedEndDate = selectedDateRange.end;
+
+                for (var i = 0; i < niedostepneDaty.length; i++) {
+                    var startDate = moment(niedostepneDaty[i]);
+                    var endDate = startDate.clone().add(1, 'day');
+
+                    if ((selectedStartDate && selectedStartDate.isBefore(endDate) && selectedEndDate.isAfter(startDate)) ||
+                        (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            function isDateRangeOverlap(selectedStartDate, selectedEndDate) {
+                // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
+
+                for (var i = 0; i < niedostepneDaty.length; i++) {
+                    var startDate = moment(niedostepneDaty[i]);
+                    var endDate = startDate.clone().add(1, 'day');
+
+                    if ((selectedStartDate && moment(selectedStartDate).isBefore(endDate) && moment(selectedEndDate).isAfter(startDate)) ||
+                        (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
+                        return true;
+                    }
+
+                }
+                return false;
+            }
+
+            // Dodaj obsługę zdarzenia Apply
+            $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+                if (isDateRangeOverlap(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'))) {
+                    alert('Wybrany termin zawiera niedostępne dni. Proszę wybrać inny termin.');
+                    picker.setStartDate(moment(defaultStartDate));
+                    picker.setEndDate(moment(defaultEndDate));
+                } else {
+                    // Ustaw wartości ukrytych pól
+                    $('#startDateInput').val(picker.startDate.format('YYYY-MM-DD'));
+                    $('#endDateInput').val(picker.endDate.format('YYYY-MM-DD'));
+                }
+            });
+
         });
-    });
-</script>
+    </script>
 
 
-
-<div>
-    <h4>Car</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().VehicleBrand)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().VehicleBrand)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().CarModel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().CarModel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().Generation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().Generation)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().BodyType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().BodyType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().YearOfProduction)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().YearOfProduction)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().FuelType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().FuelType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().Mileage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().Mileage)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item1.First().Price)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item1.First().Price)
-        </dd>
-    </dl>
 </div>
+
 
 <div class="col-md-4">
     <div class="form-group">

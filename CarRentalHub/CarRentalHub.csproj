@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Images\**" />
+    <Content Remove="Images\**" />
+    <EmbeddedResource Remove="Images\**" />
+    <None Remove="Images\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\js\index.tsx" />
     <Content Remove="wwwroot\js\Sample.tsx" />
   </ItemGroup>
@@ -41,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Images\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

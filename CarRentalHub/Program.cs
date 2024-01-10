@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CarRentalHub.Data;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +34,8 @@ builder.Services.AddJsEngineSwitcher(options => options.DefaultEngineName = V8Js
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<CarAvailabilityContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CarAvailabilityContext") ?? throw new InvalidOperationException("Connection string 'CarAvailabilityContext' not found.")));
 builder.Services.AddDbContext<FilterDataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("FilterDataContext") ?? throw new InvalidOperationException("Connection string 'FilterDataContext' not found.")));
 builder.Services.AddDbContext<PhotoContext>(options =>

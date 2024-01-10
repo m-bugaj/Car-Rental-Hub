@@ -21,14 +21,16 @@ namespace CarRentalHub.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly PhotoContext _photoContext;
+        private readonly CarAvailabilityContext _carAvailabilityContext;
 
 
-        public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, PhotoContext photoContext)
+        public CarsController(CarRentalHubContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment webHostEnvironment, PhotoContext photoContext, CarAvailabilityContext carAvailabilityContext)
         {
             _context = context;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
             _photoContext = photoContext;
+            _carAvailabilityContext = carAvailabilityContext;
         }
 
         // GET: Cars
@@ -130,6 +132,23 @@ namespace CarRentalHub.Controllers
             return cars;
         }
 
+        // Rezerwacja auta na dany termin
+        [HttpPost]
+        public IActionResult AddAvailability(int carId, DateTime startDate, DateTime endDate)
+        {
+            var newAvailability = new CarAvailability
+            {
+                CarID = carId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            _carAvailabilityContext.Add(newAvailability);
+            _carAvailabilityContext.SaveChanges();
+
+            return RedirectToAction("Details", new { id = carId });
+        }
+
         // GET: Cars/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -140,10 +159,22 @@ namespace CarRentalHub.Controllers
 
             var car = await _context.CarInfoModel
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (car == null)
             {
                 return NotFound();
             }
+
+            // Pobierz rzeczywiste niedostępne daty z bazy danych
+            var niedostepneDatyQuery = _carAvailabilityContext.CarAvailability
+                .Where(ca => ca.CarID == id)
+                .AsEnumerable()  // Ta linia powinna umożliwić ewaluację części zapytania na poziomie klienta
+                .SelectMany(ca => Enumerable.Range(0, 1 + (ca.EndDate - ca.StartDate).Days)
+                                  .Select(offset => ca.StartDate.AddDays(offset)));
+            var niedostepneDaty = niedostepneDatyQuery.ToList();
+
+            // Przekazanie danych do widoku
+            ViewBag.NiedostepneDaty = niedostepneDaty;
 
             var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>>(
                 await _context.CarInfoModel.ToListAsync(),
