@@ -46,70 +46,125 @@
         </tr>
     </thead>
     <tbody>
+        
+
+
+    </tbody>
+</table>
+
+<style>
+    .custom-thumbnail {
+        width: 100%;
+        height: 220px; /* dostosuj wysokość według potrzeb */
+        object-fit: cover;
+        border-radius: 8px; /* dostosuj zaokrąglenie rogów, mniejsze niż ramka ogłoszenia */
+    }
+
+    .card {
+        border: 1px solid #e0e0e0; /* delikatna szara obramówka */
+        background-color: #f8f9fa; /* jasne tło */
+        border-radius: 10px;
+    }
+
+        .card:hover {
+            border: 1px solid #007bff; /* zmiana obramówki po najechaniu myszką */
+            transition: border-color 0.3s ease-in-out;
+        }
+
+    .card-title {
+        color: #343a40; /* kolor tytułu ogłoszenia */
+    }
+
+    .card-text {
+        color: #6c757d; /* kolor tekstu ogłoszenia */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* kolor przycisku Details */
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* zmiana koloru przycisku po najechaniu myszką */
+            border-color: #0056b3;
+        }
+
+    .icon {
+        margin-right: 5px;
+        color: #6c757d; /* kolor ikon */
+    }
+
+    .card-text.small.text-muted {
+        margin-bottom: 5px; /* Resetuje margines dolny dla tej klasy */
+    }
+</style>
+
+<div class="container">
+    <div class="row">
         @foreach (var item in Model.Item1)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VehicleBrand)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CarModel)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Generation)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.BodyType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.YearOfProduction)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FuelType)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Mileage)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                @* <td>
-                    @Html.DisplayFor(modelItem => item.UserId)
-                </td> *@
+            <div class="col-md-4 mb-4">
+                <a href="@Url.Action("Details", "Cars", new { id = item.ID })" class="text-decoration-none">
+                    <div class="card">
+                        @{
+                            var mainPhoto = Model.Item2.FirstOrDefault(p => p.AdvertisementId == item.ID && p.IsMainPhoto);
+                        }
 
-
-                <td>
-                    @{
-                        var mainPhoto = Model.Item2.FirstOrDefault(p => p.AdvertisementId == item.ID && p.IsMainPhoto);
-                    }
-
-                    @if (mainPhoto != null)
-                    {
-                        var index = mainPhoto.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
-                        if (index != -1)
+                        @if (mainPhoto != null)
                         {
-                            var relativeImagePath = mainPhoto.ImagePath.Substring(index).Replace("\\", "/");
-                            <img src="@Html.Raw(relativeImagePath)" alt="@relativeImagePath" class="img-thumbnail" />
-
+                            var index = mainPhoto.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
+                            if (index != -1)
+                            {
+                                var relativeImagePath = mainPhoto.ImagePath.Substring(index).Replace("\\", "/");
+                                <div class="image-container" style="padding: 15px;">
+                                    <img src="@Html.Raw(relativeImagePath)" alt="@relativeImagePath" class="card-img-top custom-thumbnail mx-auto d-block" />
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-center mt-3">No main photo available for this advertisement.</p>
+                            }
                         }
                         else
                         {
-                            <p>No main photo available for this advertisement.</p>
+                            <p class="text-center mt-3">No main photo available for this advertisement.</p>
                         }
-                    }
-                    else
-                    {
-                        <p>No main photo available for this advertisement.</p>
-                    }
-                </td>
 
-
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                </td>
-            </tr>
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.VehicleBrand) @Html.DisplayFor(modelItem => item.CarModel)</h5>
+                            <p class="card-text small text-muted mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check-fill" viewBox="0 0 16 16">
+                                    <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
+                                </svg>
+                                <i class="bi bi-calendar icon"></i> @Html.DisplayFor(modelItem => item.YearOfProduction)
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <p class="card-text small text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                                        <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z" />
+                                        <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0" />
+                                    </svg>
+                                    <i class="bi bi-speedometer icon"></i> @Html.DisplayFor(modelItem => item.Mileage) km
+                                </p>
+                                <p class="card-text small text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-fuel-pump-fill" viewBox="0 0 16 16">
+                                        <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907.295.655.294 1.465.294 2.081V7.5a.5.5 0 0 1-.5.5H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm2.5 0a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z" />
+                                    </svg>     
+                                    <i class="bi bi-droplet icon"></i> @Html.DisplayFor(modelItem => item.FuelType)
+                                </p>
+                                <p class="card-text small text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-car-front-fill" viewBox="0 0 16 16">
+                                        <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
+                                    </svg>
+                                    <i class="bi bi-car icon"></i> @Html.DisplayFor(modelItem => item.BodyType)
+                                </p>
+                            </div>
+                            <p class="card-text"><strong>Cena za dobę:</strong> @Html.DisplayFor(modelItem => item.Price) PLN</p>
+                            <a href="@Url.Action("Details", "Cars", new { id = item.ID })" class="btn btn-primary mt-3">Wypożycz!</a>
+                        </div>
+                    </div>
+                </a>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
