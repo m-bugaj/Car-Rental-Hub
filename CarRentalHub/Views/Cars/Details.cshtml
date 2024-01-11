@@ -8,18 +8,455 @@
     .gray-button {
         background-color: gray !important;
     }
+
+
+     
 </style>
+
+<style>
+    .image-slider {
+        width: 100%;
+        overflow: hidden;
+        
+    }
+
+        .image-slider img {
+            width: 100%;
+            height: auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            border-radius: 20px;
+        }
+
+            /* .image-slider img:hover {
+                 transform: scale(1.1); 
+            } */
+
+    .slick-prev, .slick-next {
+        font-size: 30px;
+        color: white;
+        opacity: 0.7;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%) scale(4);
+        z-index: 1;
+    }
+
+        .slick-prev:hover, .slick-next:hover {
+            opacity: 0.8;
+            transform: translateY(-50%) scale(4.5); /* Dla efektu przy najechaniu */
+        }
+
+
+    .slick-prev {
+        left: 50px;
+    }
+
+    .slick-next {
+        right: 50px;
+    }
+
+    .photo-counter {
+        display: inline-flex;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 20px;
+        padding: 7px; /* zmniejszono padding */
+    }
+
+        .photo-counter svg {
+            width: 20px; /* zmniejszono wielkość ikony */
+            height: 20px; /* zmniejszono wielkość ikony */
+            margin-right: 5px; /* zmniejszono odstęp od ikony */
+            fill: #fff;
+        }
+
+        .photo-counter p {
+            margin: 0;
+            font-size: 14px; /* zmniejszono wielkość fontu */
+            color: #fff;
+        }
+
+    .thumbnail-container {
+        display: flex;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 10px;
+        gap: 5px;
+        width: 100%;
+        /* max-width: 200px; /* Szerokość obszaru miniatury */ */
+    }
+
+    .thumbnail {
+        width: 30px; /* Szerokość pojedynczej miniatury */
+        height: 30px; /* Wysokość pojedynczej miniatury */
+        object-fit: cover;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.3s ease-in-out;
+        border-radius: 5px; /* Zaokrąglenie krawędzi */
+    }
+
+        .thumbnail:hover {
+            opacity: 1;
+        }
+
+
+
+        .image-slider img.active {
+            display: block;
+        }
+</style>
+
+<style>
+    .custom-thumbnail {
+        width: 100%;
+        height: 220px; /* dostosuj wysokość według potrzeb */
+        object-fit: cover;
+        border-radius: 8px; /* dostosuj zaokrąglenie rogów, mniejsze niż ramka ogłoszenia */
+    }
+
+    .card {
+        border: 1px solid #e0e0e0; /* delikatna szara obramówka */
+        background-color: #f8f9fa; /* jasne tło */
+        border-radius: 10px;
+    }
+
+        .card:hover {
+            border: 1px solid #007bff; /* zmiana obramówki po najechaniu myszką */
+            transition: border-color 0.3s ease-in-out;
+        }
+
+    .card-title {
+        color: #343a40; /* kolor tytułu ogłoszenia */
+    }
+
+    .card-text {
+        color: #6c757d; /* kolor tekstu ogłoszenia */
+    }
+
+    .btn-primary {
+        background-color: #007bff; /* kolor przycisku Details */
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* zmiana koloru przycisku po najechaniu myszką */
+            border-color: #0056b3;
+        }
+
+    .icon {
+        margin-right: 5px;
+        color: #6c757d; /* kolor ikon */
+    }
+
+    .card-text.small.text-muted {
+        margin-bottom: 5px; /* Resetuje margines dolny dla tej klasy */
+    }
+
+
+</style>
+
+
 
 <h1>Details</h1>
 
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<div class="container" >
+    <div class="row">
+        <div class="col-md-12 col-xl-9">
+           
+            <div style="width: 100%; margin-right: auto;">
+                <div style="display: flex; flex-direction: column; position: relative;">
+                    <div class="image-slider" style="display: flex; flex-wrap: wrap;">
+                        @{
+                            var currentAdvertisementId = ViewData["CurrentAdvertisementId"] as int?;
+                            var photosForAdvertisement = Model.Item2.Where(p => p.AdvertisementId == currentAdvertisementId).ToList();
+                        }
+
+                        @foreach (var photo in photosForAdvertisement)
+                        {
+                            var index = photo.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
+                            var relativeImagePath = index != -1 ? photo.ImagePath.Substring(index).Replace("\\", "/") : photo.ImagePath;
+
+                            <img src="@Html.Raw(relativeImagePath)" alt="Advertisement Image" class="slider-image" style="width: 100%; height: 500px; object-fit: cover; margin: 5px;">
+
+                        }
+                    </div>
+                    <div class="photo-counter" data-testid="photo-counter" style="align-self: flex-end; position: absolute; bottom: 0; right: 0; margin: 17px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15" viewBox="0 0 24 24" fill="#fff" class="eujqe4h1 ooa-b658jx">
+                            <path d="m15.72 3 1 3H21l1 1v13l-1 1H3l-1-1V7l1-1h4.28l-1-3h7.44zm-1.44 2H9.72l-1 3H4v11h16V8h-4.72l-1-3zM12 8c2.757 0 5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5 2.243-5 5-5zm0 2c-1.655 0-3 1.345-3 3s1.345 3 3 3 3-1.345 3-3-1.345-3-3-3z" fill-rule="evenodd"></path>
+                        </svg>
+                        <p id="photo-counter">1 / @photosForAdvertisement.Count</p>
+                    </div>
+                </div>
+
+                <div class="thumbnail-container" style="width: 100%; display: flex; justify-content: space-around; margin-top: 20px;">
+                    @{
+                        for (var i = 0; i < 6; i++)
+                        {
+                            var photoIndex = i % photosForAdvertisement.Count;
+                            var photo = photosForAdvertisement[photoIndex];
+                            var index = photo.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
+                            var relativeImagePath = index != -1 ? photo.ImagePath.Substring(index).Replace("\\", "/") : photo.ImagePath;
+
+                            <img src="@Html.Raw(relativeImagePath)" alt="Thumbnail" class="thumbnail" style="width: 16.5%; height: auto; object-fit: cover;">
+                        }
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-xl-3" id="right-box">
+
+            <div class="card-body">
+                <h5 class="card-title" style="font-size: 40px;">@Html.DisplayFor(model => model.Item1.First().VehicleBrand) @Html.DisplayFor(model => model.Item1.First().CarModel)</h5>
+                <p class="card-text small text-muted mb-2" style="font-size: 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-calendar-check-fill" viewBox="0 0 16 16">
+                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
+                    </svg>
+                    <i class="bi bi-calendar icon" ></i> @Html.DisplayFor(model => model.Item1.First().YearOfProduction)
+                </p>
+                    <p class="card-text small text-muted" style="font-size: 20px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
+                            <path d="M8 2a.5.5 0 0 1 .5.5V4a.5.5 0 0 1-1 0V2.5A.5.5 0 0 1 8 2M3.732 3.732a.5.5 0 0 1 .707 0l.915.914a.5.5 0 1 1-.708.708l-.914-.915a.5.5 0 0 1 0-.707M2 8a.5.5 0 0 1 .5-.5h1.586a.5.5 0 0 1 0 1H2.5A.5.5 0 0 1 2 8m9.5 0a.5.5 0 0 1 .5-.5h1.5a.5.5 0 0 1 0 1H12a.5.5 0 0 1-.5-.5m.754-4.246a.39.39 0 0 0-.527-.02L7.547 7.31A.91.91 0 1 0 8.85 8.569l3.434-4.297a.39.39 0 0 0-.029-.518z" />
+                            <path fill-rule="evenodd" d="M6.664 15.889A8 8 0 1 1 9.336.11a8 8 0 0 1-2.672 15.78zm-4.665-4.283A11.95 11.95 0 0 1 8 10c2.186 0 4.236.585 6.001 1.606a7 7 0 1 0-12.002 0" />
+                        </svg>
+                        <i class="bi bi-speedometer icon"></i> @Html.DisplayFor(model => model.Item1.First().Mileage) km
+                    </p>
+                    <p class="card-text small text-muted" style="font-size: 20px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-fuel-pump-fill" viewBox="0 0 16 16">
+                            <path d="M1 2a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v8a2 2 0 0 1 2 2v.5a.5.5 0 0 0 1 0V8h-.5a.5.5 0 0 1-.5-.5V4.375a.5.5 0 0 1 .5-.5h1.495c-.011-.476-.053-.894-.201-1.222a.97.97 0 0 0-.394-.458c-.184-.11-.464-.195-.9-.195a.5.5 0 0 1 0-1q.846-.002 1.412.336c.383.228.634.551.794.907.295.655.294 1.465.294 2.081V7.5a.5.5 0 0 1-.5.5H15v4.5a1.5 1.5 0 0 1-3 0V12a1 1 0 0 0-1-1v4h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1zm2.5 0a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 .5.5h5a.5.5 0 0 0 .5-.5v-5a.5.5 0 0 0-.5-.5z" />
+                        </svg>
+                        <i class="bi bi-droplet icon"></i> @Html.DisplayFor(model => model.Item1.First().FuelType)
+                    </p>
+                    <p class="card-text small text-muted" style="font-size: 20px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-car-front-fill" viewBox="0 0 16 16">
+                            <path d="M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z" />
+                        </svg>
+                        <i class="bi bi-car icon"></i> @Html.DisplayFor(model => model.Item1.First().BodyType)
+                    </p>
+
+                <p class="card-text" style="font-size: 40px; color: #343a40;">
+                    Cena za dobę:
+                    <strong>
+                        <span style="font-size: 45px; color: #C82814;">@Html.DisplayFor(model => model.Item1.First().Price) </span>
+                    </strong>
+                    <span style="font-size: 35px; color: #C82814;">PLN</span>
+                    
+                </p>
+
+            </div>
+
+            <div class="col-12 text-center" id="reservation-box">
+                <div class="border rounded-3 p-4" style="background-color: white; border-color: #8458B3;">
+                    <label for="datePicker" class="text-dark" style="font-size: 18px;">Wybierz datę rezerwacji</label>
+                    <div class="input-group mt-3">
+                        <input type="text" name="daterange" class="form-control text-center" placeholder="Wybierz datę rezerwacji" id="datePicker" readonly />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" id="calendarIcon">
+                                <i class="fas fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    @using (Html.BeginForm("AddAvailability", "Cars", FormMethod.Post, new { id = "availabilityForm" }))
+                    {
+                        <input type="hidden" name="carId" value="@ViewBag.CurrentAdvertisementId" />
+                        <input type="hidden" id="startDateInput" name="startDate" />
+                        <input type="hidden" id="endDateInput" name="endDate" />
+
+                        <button type="button" class="btn btn-primary mt-3" style="background-color: gray; padding: 15px 30px; border: none;" disabled onclick="showConfirmationModal()">Rezerwuj!</button>
+                    }
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmationModalLabel">Potwierdzenie rezerwacji</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: gray; border: none; background-color: white;" onclick="closeConfirmationModal()">
+                                        <span aria-hidden="true" class="fas fa-times" style="color: gray; border: none; background-color: none;"></span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Czy na pewno chcesz zarezerwować samochód na dany termin?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeConfirmationModal()">Anuluj</button>
+                                    <button type="button" class="btn btn-primary" style="border: none;" onclick="confirmReservation()">Rezerwuj</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
-<div class="row">
+
+
+<script>
+    $(document).ready(function () {
+        var currentSlide = 0;
+
+        // Inicjalizacja slidera
+        var slider = $('.image-slider').slick({
+            dots: false,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            prevArrow: '<span class="slick-prev"></span>',
+            nextArrow: '<span class="slick-next"></span>',
+            responsive: [
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+
+        // Obsługa zmiany slajdu
+        slider.on('afterChange', function (event, slick, currentSlide) {
+            $('#photo-counter').text((currentSlide + 1) + ' / ' + slick.slideCount);
+        });
+
+        // Funkcja do pokazywania dużego zdjęcia po kliknięciu na miniaturę
+        $('.thumbnail').on('click', function () {
+            var index = $(this).index();
+            slider.slick('slickGoTo', index);
+            var largeImagePath = $(this).attr('src');
+            $('#largeImage').attr('src', largeImagePath);
+        });
+    });
+</script>
+
+<script>
+    function showConfirmationModal() {
+        $('#confirmationModal').modal('show');
+    }
+
+    function closeConfirmationModal() {
+        $('#confirmationModal').modal('hide');
+    }
+
+    function confirmReservation() {
+        // Przesłanie formularza
+        document.getElementById("availabilityForm").submit();
+    }
+</script>
+
+<script>
+    $(function () {
+        var niedostepneDaty = @Html.Raw(Json.Serialize(ViewBag.NiedostepneDaty));
+
+        // Znajdź najbliższą dostępną datę spośród najbliższych 3 dni
+        var now = moment();
+        var najblizszaDostepnaData = null;
+
+        for (var i = 0; i < 3; i++) {
+            var potencjalnaData = now.clone().add(i, 'days');
+            var potencjalnaDataString = potencjalnaData.format('YYYY-MM-DD');
+
+            if (!niedostepneDaty.includes(potencjalnaDataString)) {
+                najblizszaDostepnaData = potencjalnaData;
+                break;
+            }
+        }
+
+        // Ustaw domyślny zakres dat na najbliższe dostępne 3 dni
+        var defaultStartDate = najblizszaDostepnaData ? najblizszaDostepnaData.format('MM/DD/YYYY') : now.format('MM/DD/YYYY');
+        var defaultEndDate = najblizszaDostepnaData ? najblizszaDostepnaData.clone().add(2, 'days').format('MM/DD/YYYY') : now.clone().add(2, 'days').format('MM/DD/YYYY');
+
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'left',
+            startDate: defaultStartDate,
+            endDate: defaultEndDate,
+            isInvalidDate: function (date) {
+                // Sprawdź, czy data jest niedostępna
+                var stringDate = date.format('YYYY-MM-DD');
+                return niedostepneDaty.includes(stringDate) || isDateOverlap(date);
+            }
+        }, function (start, end, label) {
+            console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+            $('.btn-primary').prop('disabled', false).css('background-color', '#d0bdf4');
+        });
+
+
+        // Dodaj obsługę zdarzenia kliknięcia na ikonkę kalendarza
+        $('#calendarIcon').click(function () {
+            $('input[name="daterange"]').trigger('focus');
+        });
+
+        function isDateOverlap(selectedDateRange) {
+            // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
+            var selectedStartDate = selectedDateRange.start;
+            var selectedEndDate = selectedDateRange.end;
+
+            for (var i = 0; i < niedostepneDaty.length; i++) {
+                var startDate = moment(niedostepneDaty[i]);
+                var endDate = startDate.clone().add(1, 'day');
+
+                if ((selectedStartDate && selectedStartDate.isBefore(endDate) && selectedEndDate.isAfter(startDate)) ||
+                    (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function isDateRangeOverlap(selectedStartDate, selectedEndDate) {
+            // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
+
+            for (var i = 0; i < niedostepneDaty.length; i++) {
+                var startDate = moment(niedostepneDaty[i]);
+                var endDate = startDate.clone().add(1, 'day');
+
+                if ((selectedStartDate && moment(selectedStartDate).isBefore(endDate) && moment(selectedEndDate).isAfter(startDate)) ||
+                    (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+        // Dodaj obsługę zdarzenia Apply
+        $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
+            if (isDateRangeOverlap(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'))) {
+                alert('Wybrany termin zawiera niedostępne dni. Proszę wybrać inny termin.');
+                picker.setStartDate(moment(defaultStartDate));
+                picker.setEndDate(moment(defaultEndDate));
+            } else {
+                // Ustaw wartości ukrytych pól
+                $('#startDateInput').val(picker.startDate.format('YYYY-MM-DD'));
+                $('#endDateInput').val(picker.endDate.format('YYYY-MM-DD'));
+            }
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+@* <div class="row">
     
         <h4>Car</h4>
         <hr />
@@ -123,157 +560,13 @@
 
 
 
-    <script>
-        function showConfirmationModal() {
-            $('#confirmationModal').modal('show');
-        }
-
-        function closeConfirmationModal() {
-            $('#confirmationModal').modal('hide');
-        }
-
-        function confirmReservation() {
-            // Przesłanie formularza
-            document.getElementById("availabilityForm").submit();
-        }
-    </script>
-
-
-    <script>
-        $(function () {
-            var niedostepneDaty = @Html.Raw(Json.Serialize(ViewBag.NiedostepneDaty));
-
-            // Znajdź najbliższą dostępną datę spośród najbliższych 3 dni
-            var now = moment();
-            var najblizszaDostepnaData = null;
-
-            for (var i = 0; i < 3; i++) {
-                var potencjalnaData = now.clone().add(i, 'days');
-                var potencjalnaDataString = potencjalnaData.format('YYYY-MM-DD');
-
-                if (!niedostepneDaty.includes(potencjalnaDataString)) {
-                    najblizszaDostepnaData = potencjalnaData;
-                    break;
-                }
-            }
-
-            // Ustaw domyślny zakres dat na najbliższe dostępne 3 dni
-            var defaultStartDate = najblizszaDostepnaData ? najblizszaDostepnaData.format('MM/DD/YYYY') : now.format('MM/DD/YYYY');
-            var defaultEndDate = najblizszaDostepnaData ? najblizszaDostepnaData.clone().add(2, 'days').format('MM/DD/YYYY') : now.clone().add(2, 'days').format('MM/DD/YYYY');
-
-            $('input[name="daterange"]').daterangepicker({
-                opens: 'left',
-                startDate: defaultStartDate,
-                endDate: defaultEndDate,
-                isInvalidDate: function (date) {
-                    // Sprawdź, czy data jest niedostępna
-                    var stringDate = date.format('YYYY-MM-DD');
-                    return niedostepneDaty.includes(stringDate) || isDateOverlap(date);
-                }
-            }, function (start, end, label) {
-                console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-                $('.btn-primary').prop('disabled', false).css('background-color', '#d0bdf4');
-            });
-
-
-            // Dodaj obsługę zdarzenia kliknięcia na ikonkę kalendarza
-            $('#calendarIcon').click(function () {
-                $('input[name="daterange"]').trigger('focus');
-            });
-
-            function isDateOverlap(selectedDateRange) {
-                // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
-                var selectedStartDate = selectedDateRange.start;
-                var selectedEndDate = selectedDateRange.end;
-
-                for (var i = 0; i < niedostepneDaty.length; i++) {
-                    var startDate = moment(niedostepneDaty[i]);
-                    var endDate = startDate.clone().add(1, 'day');
-
-                    if ((selectedStartDate && selectedStartDate.isBefore(endDate) && selectedEndDate.isAfter(startDate)) ||
-                        (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            function isDateRangeOverlap(selectedStartDate, selectedEndDate) {
-                // Sprawdź, czy nowo wybrany zakres dat nachodzi na niedostępne daty
-
-                for (var i = 0; i < niedostepneDaty.length; i++) {
-                    var startDate = moment(niedostepneDaty[i]);
-                    var endDate = startDate.clone().add(1, 'day');
-
-                    if ((selectedStartDate && moment(selectedStartDate).isBefore(endDate) && moment(selectedEndDate).isAfter(startDate)) ||
-                        (!selectedStartDate && !selectedEndDate && moment(selectedDateRange).isSameOrAfter(startDate) && moment(selectedDateRange).isBefore(endDate))) {
-                        return true;
-                    }
-
-                }
-                return false;
-            }
-
-            // Dodaj obsługę zdarzenia Apply
-            $('input[name="daterange"]').on('apply.daterangepicker', function (ev, picker) {
-                if (isDateRangeOverlap(picker.startDate.format('YYYY-MM-DD'), picker.endDate.format('YYYY-MM-DD'))) {
-                    alert('Wybrany termin zawiera niedostępne dni. Proszę wybrać inny termin.');
-                    picker.setStartDate(moment(defaultStartDate));
-                    picker.setEndDate(moment(defaultEndDate));
-                } else {
-                    // Ustaw wartości ukrytych pól
-                    $('#startDateInput').val(picker.startDate.format('YYYY-MM-DD'));
-                    $('#endDateInput').val(picker.endDate.format('YYYY-MM-DD'));
-                }
-            });
-
-        });
-    </script>
+    
 
 
 </div>
 
+ *@
 
-<div class="col-md-4">
-    <div class="form-group">
-        @{
-            var currentAdvertisementId = ViewData["CurrentAdvertisementId"] as int?;
-            var photosForAdvertisement = Model.Item2.Where(p => p.AdvertisementId == currentAdvertisementId).ToList();
-        }
-
-        @if (photosForAdvertisement.Any())
-        {
-            <div class="row">
-                @foreach (var photo in photosForAdvertisement)
-                {
-                    <div class="col-md-6">
-                        @if (photo != null)
-                        {
-                            var index = photo.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
-                            if (index != -1)
-                            {
-                                var relativeImagePath = photo.ImagePath.Substring(index).Replace("\\", "/");
-                                <img src="@Html.Raw(relativeImagePath)" alt="Advertisement Image" class="img-thumbnail mb-2" />
-                            }
-                            else
-                            {
-                                <p>Photos are not available for this advertisement.</p>
-                            }
-                        }
-                        else
-                        {
-                            <p>Photos are not available for this advertisement.</p>
-                        }
-                    </div>
-                }
-            </div>
-        }
-        else
-        {
-            <p>Photos are not available for this advertisement.</p>
-        }
-    </div>
-</div>
 
 
 
