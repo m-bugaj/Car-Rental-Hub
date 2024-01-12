@@ -2,8 +2,50 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <p>User Id : @ViewData["UserId"]</p>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    .hero-section {
+        background: linear-gradient(to bottom, #3498db, #2980b9);
+        color: #fff;
+        padding: 100px 0;
+    }
+
+    .car-animation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* Dodaj tutaj style związane z animacją samochodu */
+    }
+</style>
+
+<div class="hero-section">
+    <div class="container text-center">
+
+
+
+
+    </div>
 </div>
+
+<div class="car-animation">
+    <!-- Tu umieść elementy związane z animacją samochodu -->
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const carAnimation = document.querySelector(".car-animation");
+
+        document.addEventListener("mousemove", function (e) {
+            const xPos = (e.clientX / window.innerWidth - 0.5) * 20; // Dostosuj prędkość ruchu samochodu
+            const yPos = (e.clientY / window.innerHeight - 0.5) * 20;
+
+            carAnimation.style.transform = `translate(-50%, -50%) translate(${xPos}px, ${yPos}px)`;
+        });
+    });
+</script>

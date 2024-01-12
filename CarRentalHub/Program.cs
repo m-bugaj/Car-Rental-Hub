@@ -9,6 +9,7 @@ using JavaScriptEngineSwitcher.V8;
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using JavaScriptEngineSwitcher.Core.Extensions;
 using React.AspNet;
+using System.Runtime.ConstrainedExecution;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +51,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredUniqueChars = 1;
     options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = false;
+
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 });
+
+
 
 var app = builder.Build();
 
@@ -92,7 +99,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=FilterData}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();

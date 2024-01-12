@@ -5,51 +5,56 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+    .hero-section {
+        background: linear-gradient(to bottom, #3498db, #2980b9);
+        color: #fff;
+        padding: 100px 0;
+        border-radius: 20px;
+    }
 
-@if (Model != null)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.VehicleBrand)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.VehicleBrand)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>No data available.</p>
-}
+    .custom-button {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+        background-color: #ffffff;
+        color: #000000;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+    }
 
-<form asp-controller="Cars" asp-action="Index" method="get">
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedMarka" class="form-label">Marka pojazdu:</label>
-                <div class="col-md-10">
+        .custom-button:hover {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+    .form-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+</style>
+
+
+<div class="hero-section">
+    <div class="container text-center">
+        <h2 class="text-center mb-5 display-4 mb">Znajdź swój samochód!</h2>
+        <form asp-controller="Cars" asp-action="Index" method="get">
+            
+            <div class="row">
+                <!-- Pierwszy rząd -->
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedMarka" class="form-label">Marka pojazdu:</label> *@
                     <select id="selectedMarka" name="selectedMarka" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Wybierz markę</option>
                         @if (ViewBag.DostepneMarki != null)
@@ -61,35 +66,24 @@ else
                         }
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedModel" class="form-label">Model pojazdu:</label>
-                <div class="col-md-10">
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedModel" class="form-label">Model pojazdu:</label> *@
                     <select id="selectedModel" name="selectedModel" class="form-control custom-select" style="height: 60px;">
                         <!-- Modele zostaną automatycznie uzupełnione po zmianie wybranej marki -->
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedGeneration" class="form-label">Generacja:</label>
-                <div class="col-md-10">
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedGeneration" class="form-label">Generacja:</label> *@
                     <select id="selectedGeneration" name="selectedGeneration" class="form-control custom-select" style="height: 60px;">
                         <!-- Modele zostaną automatycznie uzupełnione po zmianie wybranej marki -->
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedYearFrom" class="form-label">Rok produkcji od:</label>
-                <div class="col-md-10">
+                <!-- Drugi rząd -->
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedYearFrom" class="form-label">Rok produkcji od:</label> *@
                     <select id="selectedYearFrom" name="selectedYearFrom" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Rok produkcji od</option>
                         @foreach (var year in ViewBag.AvailableYears)
@@ -98,13 +92,9 @@ else
                         }
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedYearTo" class="form-label">Rok produkcji do:</label>
-                <div class="col-md-10">
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedYearTo" class="form-label">Rok produkcji do:</label> *@
                     <select id="selectedYearTo" name="selectedYearTo" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Rok produkcji do</option>
                         @foreach (var year in ViewBag.AvailableYears)
@@ -113,13 +103,9 @@ else
                         }
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedBodyType" class="form-label">Typ nadwozia:</label>
-                <div class="col-md-10">
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedBodyType" class="form-label">Typ nadwozia:</label> *@
                     <select id="selectedBodyType" name="selectedBodyType" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Typ nadwozia</option>
                         @foreach (var bodyType in ViewBag.BodyType)
@@ -128,13 +114,10 @@ else
                         }
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="selectedFuelType" class="form-label">Typ paliwa:</label>
-                <div class="col-md-10">
+                <!-- Trzeci rząd -->
+                <div class="col-md-4 mb-3">
+                    @* <label for="selectedFuelType" class="form-label">Typ paliwa:</label> *@
                     <select id="selectedFuelType" name="selectedFuelType" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Typ paliwa</option>
                         @foreach (var fuelType in ViewBag.FuelType)
@@ -143,55 +126,39 @@ else
                         }
                     </select>
                 </div>
-            </div>
-        </div>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="MileageFrom" class="form-label">Przebieg od: (km)</label>
-                <div class="col-md-10">
-                    <input id="MileageFrom" name="MileageFrom" class="form-control custom-select" style="height: 60px;">
+                <div class="col-md-4 mb-3">
+                    @* <label for="MileageFrom" class="form-label">Przebieg od: (km)</label> *@
+                    <input id="MileageFrom" name="MileageFrom" class="form-control custom-select" style="height: 60px;" placeholder="Przebieg od (km)">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    @* <label for="MileageTo" class="form-label">Przebieg do: (km)</label> *@
+                    <input id="MileageTo" name="MileageTo" class="form-control custom-select" style="height: 60px;" placeholder="Przebieg do (km)">
+                </div>
+
+                <!-- Czwarty rząd -->
+                <div class="col-md-4 mb-3">
+                    @* <label for="PriceFrom" class="form-label">Cena od: (PLN)</label> *@
+                    <input id="PriceFrom" name="PriceFrom" class="form-control custom-select" style="height: 60px;" placeholder="Cena od (PLN)">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    @* <label for="PriceTo" class="form-label">Cena do: (PLN)</label> *@
+                    <input id="PriceTo" name="PriceTo" class="form-control custom-select" style="height: 60px;" placeholder="Cena do (PLN)">
+                </div>
+
+                <!-- Przycisk Szukaj -->
+                <div class="col-md-12 text-center mt-4">
+                    <button type="submit" class="custom-button">Szukaj</button>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="MileageTo" class="form-label">Przebieg do: (km)</label>
-                <div class="col-md-10">
-                    <input id="MileageTo" name="MileageTo" class="form-control custom-select" style="height: 60px;">
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="PriceFrom" class="form-label">Cena od: (PLN)</label>
-                <div class="col-md-10">
-                    <input id="PriceFrom" name="PriceFrom" class="form-control custom-select" style="height: 60px;">
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-2">
-            <div class="form-group">
-                <label for="PriceTo" class="form-label">Cena do: (PLN)</label>
-                <div class="col-md-10">
-                    <input id="PriceTo" name="PriceTo" class="form-control custom-select" style="height: 60px;">
-                </div>
-            </div>
-        </div>
-
-            <div class="form-group mt-3">
-                <input type="submit" value="Szukaj" class="btn btn-primary" />
-            </div>
 
     </div>
-</form>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>

@@ -13,18 +13,23 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
+    @* <li class="nav-item">
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
+    </li> *@
+        
+
     <li>
-            <a class="nav-link text-light rounded" asp-area="" asp-controller="Cars" asp-action="Create" style="background-color: #51e2f5;">
+            <a class="nav-link text-light rounded" asp-area="" asp-controller="Cars" asp-action="Create" style="background: linear-gradient(to bottom, #3498db, #2980b9);">
                 <i class="fas fa-plus"></i> Dodaj ogłoszenie
             </a>
+    </li>
+
+    <li class="nav-item">
+        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button id="logout" type="submit" class="nav-link btn btn-link text-white border-0" style="margin-left: 10px; margin-right: 10px; background-color: indianred;">
+                Logout
+            </button>
+        </form>
     </li>
 
 }
