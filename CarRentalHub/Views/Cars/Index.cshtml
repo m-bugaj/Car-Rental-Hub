@@ -4,55 +4,372 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Ogłoszenia</h1>
+@if (ViewBag.FilterParameters != null)
+{
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .background-bar {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .hero-section {
+            color: #fff;
+            padding: 50px 10px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: -90px;
+            margin-bottom: -30px;
+            margin-left: 10px;
+            margin-right: 10px;
+            position: relative;
+            transform: scale(0.8);
+            z-index: 1;
+        }
+
+        .custom-button {
+            font-size: 1.3rem;
+            font-weight: 300;
+            padding: 12px 25px;
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+            .custom-button:hover {
+                background-color: #1a1a1a;
+                color: #ffffff;
+            }
+
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .logo-container {
+            position: relative;
+            margin-bottom: 0px;
+        }
+
+        .logo {
+            max-width: 10%;
+            max-height: 10%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-icon {
+            font-size: 18px;
+            margin-right: 5px;
+        }
+    </style>
+
+    <div class="background-bar" id="backgroundBar"></div>
+    <div class="hero-section">
+
+        <div class="logo-container">
+            <img src="~/Logo/Car.png" alt="Car Logo" class="logo" />
+        </div>
+
+        <div class="container text-center">
+
+            <h2 class="text-center mb-5 display-4 mb">Znajdź swój samochód!</h2>
+
+            <form asp-controller="Cars" asp-action="Index" method="get">
+
+                <div class="row">
+                    <!-- Pierwszy rząd -->
+                    <div class="col-md-4 mb-3">
+                        <label for="selectedMarka" class="form-label">Marka pojazdu:</label>
+                        <select id="selectedMarka" name="selectedMarka" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Wybierz markę</option>
+
+                            @if (ViewBag.DostepneMarki != null)
+                            {
+                                foreach (var marka in ViewBag.DostepneMarki)
+                                {
+                                    <option value="@marka.Value" selected="@(marka.Value == ViewBag.FilterParameters?.SelectedMarka)">
+                                        @marka.Text
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="selectedModel" class="form-label">Model pojazdu:</label>
+                        <select id="selectedModel" name="selectedModel" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Wybierz model</option>
+
+                            @if (ViewBag.DostepneModele != null)
+                            {
+                                foreach (var modelcar in ViewBag.DostepneModele)
+                                {
+                                    <option value="@modelcar" selected="@(modelcar == ViewBag.FilterParameters?.SelectedModel)">
+                                        @modelcar
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="selectedGeneration" class="form-label">Generacja:</label>
+                        <select id="selectedGeneration" name="selectedGeneration" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Wybierz generację</option>
+
+                            @if (ViewBag.AvailableGenerations != null)
+                            {
+                                foreach (var generation in ViewBag.AvailableGenerations)
+                                {
+                                    <option value="@generation" selected="@(generation == ViewBag.FilterParameters?.SelectedGeneration)">
+                                        @generation
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Drugi rząd -->
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="selectedYearFrom" class="form-label">Rok produkcji od:</label> -->
+                        <select id="selectedYearFrom" name="selectedYearFrom" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Rok produkcji od</option>
+                            @foreach (var year in ViewBag.AvailableYears)
+                            {
+                                <option value="@year" selected="@(year == ViewBag.FilterParameters?.SelectedYearFrom)">@year</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="selectedYearTo" class="form-label">Rok produkcji do:</label> -->
+                        <select id="selectedYearTo" name="selectedYearTo" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Rok produkcji do</option>
+                            @foreach (var year in ViewBag.AvailableYears)
+                            {
+                                <option value="@year" selected="@(year == ViewBag.FilterParameters?.SelectedYearTo)">@year</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="selectedBodyType" class="form-label">Typ nadwozia:</label> -->
+                        <select id="selectedBodyType" name="selectedBodyType" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Typ nadwozia</option>
+                            @foreach (var bodyType in ViewBag.BodyType)
+                            {
+                                <option value="@bodyType" selected="@(bodyType == ViewBag.FilterParameters?.SelectedBodyType)">@bodyType</option>
+                            }
+                        </select>
+                    </div>
+
+
+                    <!-- Trzeci rząd -->
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="selectedFuelType" class="form-label">Typ paliwa:</label> -->
+                        <select id="selectedFuelType" name="selectedFuelType" class="form-control custom-select" style="height: 60px;">
+                            <option value="" selected>Typ paliwa</option>
+                            @foreach (var fuelType in ViewBag.FuelType)
+                            {
+                                <option value="@fuelType" selected="@(fuelType == ViewBag.FilterParameters?.SelectedFuelType)">@fuelType</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="MileageFrom" class="form-label">Przebieg od: (km)</label> -->
+                        <input id="MileageFrom" name="MileageFrom" class="form-control custom-select" style="height: 60px;" placeholder="Przebieg od (km)" value="@ViewBag.FilterParameters?.MileageFrom">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="MileageTo" class="form-label">Przebieg do: (km)</label> -->
+                        <input id="MileageTo" name="MileageTo" class="form-control custom-select" style="height: 60px;" placeholder="Przebieg do (km)" value="@ViewBag.FilterParameters?.MileageTo">
+                    </div>
+
+                    <!-- Czwarty rząd -->
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="PriceFrom" class="form-label">Cena od: (PLN)</label> -->
+                        <input id="PriceFrom" name="PriceFrom" class="form-control custom-select" style="height: 60px;" placeholder="Cena od (PLN)" value="@ViewBag.FilterParameters?.PriceFrom">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <!-- <label for="PriceTo" class="form-label">Cena do: (PLN)</label> -->
+                        <input id="PriceTo" name="PriceTo" class="form-control custom-select" style="height: 60px;" placeholder="Cena do (PLN)" value="@ViewBag.FilterParameters?.PriceTo">
+                    </div>
+
+
+                    <!-- Przycisk Szukaj -->
+                    <div class="col-md-4 mb-3" style="display: flex;">
+                        <input type="text" class="form-control custom-select" style="width: 75%; height: 60px;" placeholder="Wyszukaj...">
+                        <button type="submit" class="search-btn" style="width: 25%; height: 60px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search search-icon" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </button>
+                    </div>
+
+
+                </div>
+            </form>
+
+
+        </div>
+
+    </div>
 
 
 
-<p>
-    <a asp-action="Create">Dodaj ogłoszenie</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().VehicleBrand)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().CarModel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().Generation)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().BodyType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().YearOfProduction)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().FuelType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().Mileage)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Item1.First().Price)
-            </th>
-            @* <th>
-                @Html.DisplayNameFor(model => model.Item1.First().UserId)
-            </th> *@
-            <th>
-                @Html.DisplayName("Main Photo")
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 
-    </tbody>
-</table>
+    <script>
+        $(document).ready(function () {
+            // Obsługa zdarzenia zmiany wyboru dla selectedMarka
+            $('#selectedMarka').change(function () {
+                // Pobierz wartość wybranej marki
+                var selectedMarka = $(this).val();
+
+                // Jeśli wybrano markę, usuń domyślną opcję
+                if (selectedMarka) {
+                    $('#selectedMarka option[value=""]').remove();
+                }
+
+                // Wywołaj akcję w kontrolerze, aby uzyskać modele dla danej marki
+                $.getJSON('/FilterData/PobierzModele', { marka: selectedMarka }, function (data) {
+                    // Wyczyść istniejące opcje w selectedModel
+                    $('#selectedModel').empty();
+
+                    // Dodaj domyślną opcję do selectedModel
+                    $('#selectedModel').append($('<option>', {
+                        value: '',
+                        text: 'Wybierz model'
+                    }));
+
+                    // Dodaj nowe opcje do selectedModel
+                    $.each(data, function (index, model) {
+                        $('#selectedModel').append($('<option>', {
+                            value: model,
+                            text: model
+                        }));
+                    });
+
+                    // Pobierz wartość modelu z zapytania GET
+                    var selectedModelFromUrl = getParameterByName('selectedModel');
+
+                    // Jeśli wartość modelu jest dostępna, ustaw ją jako wybraną wartość
+                    if (selectedModelFromUrl) {
+                        $('#selectedModel').val(selectedModelFromUrl);
+                    }
+
+                    // Wywołaj zdarzenie zmiany dla selectedModel
+                    $('#selectedModel').change();
+                });
+            });
+
+            // Obsługa zdarzenia zmiany wyboru dla selectedModel
+            $('#selectedModel').change(function () {
+                // Pobierz wartość wybranego modelu
+                var selectedModel = $(this).val();
+
+                // Jeśli wybrano model, usuń domyślną opcję
+                if (selectedModel) {
+                    $('#selectedModel option[value=""]').remove();
+                }
+
+                // Wywołaj akcję w kontrolerze, aby uzyskać generacje dla danego modelu
+                $.getJSON('/FilterData/GetGeneration', { carModel: selectedModel }, function (data) {
+                    // Wyczyść istniejące opcje w selectedGeneration
+                    $('#selectedGeneration').empty();
+
+                    // Dodaj domyślną opcję do selectedGeneration
+                    $('#selectedGeneration').append($('<option>', {
+                        value: '',
+                        text: 'Wybierz generację'
+                    }));
+
+                    // Dodaj nowe opcje do selectedGeneration
+                    $.each(data, function (index, generation) {
+                        $('#selectedGeneration').append($('<option>', {
+                            value: generation,
+                            text: generation
+                        }));
+                    });
+
+                    // Pobierz wartość generacji z zapytania GET
+                    var selectedGenerationFromUrl = getParameterByName('selectedGeneration');
+
+                    // Jeśli wartość generacji jest dostępna, ustaw ją jako wybraną wartość
+                    if (selectedGenerationFromUrl) {
+                        $('#selectedGeneration').val(selectedGenerationFromUrl);
+                    }
+                });
+            });
+
+            // Wywołaj zdarzenie zmiany po załadowaniu strony, aby zainicjować dostępne modele
+            $('#selectedMarka').change();
+
+            // Funkcja do pobierania wartości parametru z zapytania GET
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+        });
+
+    </script>
+
+}
+
 
 <style>
     .custom-thumbnail {
@@ -99,6 +416,7 @@
     .card-text.small.text-muted {
         margin-bottom: 5px; /* Resetuje margines dolny dla tej klasy */
     }
+
 </style>
 
 <div class="container">
@@ -170,3 +488,22 @@
         }
     </div>
 </div>
+
+
+<script>
+    // JavaScript do uzależnienia wysokości background-bar od wysokości hero-section
+    function updateBackgroundBarHeight() {
+        var heroSectionHeight = document.querySelector('.hero-section').offsetHeight;
+        var backgroundBar = document.getElementById('backgroundBar');
+        var marginTop = 20; // Dostosuj margines górny według potrzeb
+        var marginBottom = 20; // Dostosuj margines dolny według potrzeb
+
+        // Ustaw wysokość background-bar z uwzględnieniem marginesów
+        backgroundBar.style.height = heroSectionHeight-120 + marginTop + marginBottom + "px";
+    }
+
+    document.addEventListener("DOMContentLoaded", updateBackgroundBarHeight);
+
+    // Dodaj listener na zmianę rozmiaru okna
+    window.addEventListener("resize", updateBackgroundBarHeight);
+</script>
