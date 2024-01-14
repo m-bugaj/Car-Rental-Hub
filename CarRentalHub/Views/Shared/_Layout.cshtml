@@ -33,21 +33,62 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
 
     <style>
-        body {
-            /* font-family: 'Nunito Sans', sans-serif; */
+        /* body {
+                font-family: 'Nunito Sans', sans-serif;
+            } */
 
+        body {
+            padding-top: 56px;
+            margin: 0;
         }
 
-        /* Dodatkowe niestandardowe style... */
+        .navbar {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+            transition: background-color 0.3s ease-in-out;
+            border-bottom: none !important;
+            height: 90px; /* Dodaj wysokość */
+        }
+
+            .navbar.navbar-solid {
+                background-color: white;
+            }
+
+            .navbar a.nav-link:hover {
+                color: white !important;
+            }
+
+        .navbar-brand img {
+            max-height: 100%;
+            position: relative;
+            top: 0;
+            left: 0;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .navbar.navbar-solid .navbar-brand img.logo {
+            opacity: 0;
+        }
+
+        .navbar.navbar-solid .navbar-brand img.logo-inv {
+            opacity: 1;
+        }
+
+        .navbar-brand img.logo-inv {
+            opacity: 0;
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 fixed-top">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom  fixed-top navbar-transparent navbar-hover">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="FilterData" asp-action="Index">
-                    <img src="~/Logo/Logo.png" alt="Logo" style="max-height: 100%; max-width: 180px;" />
+                    <img id="logoImage" src="~/Logo/Logoinv.png" alt="Logo" class="logo" style="max-height: 100%; max-width: 230px;" />
+                    @* <img src="~/Logo/Logoinv.png" alt="Logo Inv" class="logo-inv" style="max-height: 100%; max-width: 180px;" /> *@
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation" style="width: 10vw; padding: 0; height: auto;">
@@ -56,24 +97,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 text-center">
                         <li class="nav-item">
-                            <a class="nav-link btn btn-link text-white border-0" asp-area="" asp-controller="Cars" asp-action="Index" style="margin-left: 10px; margin-right: 10px; background-color: lightseagreen;">
-                            Pełna lista samochodów
+                            <a class="nav-link btn btn-link text-white border-0 nav-link-padding" asp-area="" asp-controller="Cars" asp-action="Index" style="background-color: lightseagreen;">
+                                Pełna lista samochodów
                             </a>
                         </li>
-                        @* <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="FilterData" asp-action="Index">Find Your Car!</a>
-                        </li> *@
-                        
+                        <!-- Dodaj inne elementy menu według potrzeb -->
                     </ul>
                 </div>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                        <partial name="_LoginPartial.cshtml" />
+                    <partial name="_LoginPartial.cshtml" />
                 </div>
             </div>
         </nav>
     </header>
     <div class="container" style="margin-top: 70px;">
-        @* Margines strony od góry *@
+        @* Margines strony od góry 70 *@
     </div>
     <div class="container">
         <main role="main" class="pb-3">
@@ -93,5 +131,54 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+
+
+    <script>
+        $(document).ready(function () {
+            var navbar = $(".navbar");
+            var navbarBrandImg = $(".navbar-brand img.logo");
+            var logoInvSrc = "/Logo/Logoinv.png";
+
+
+            $(window).scroll(function () {
+                if ($(this).scrollTop() != 0) {
+                    
+                    navbar.addClass("navbar-solid");
+                    navbarBrandImg.css("opacity", 0);
+                    navbarBrandImg.attr("src", "/Logo/Logo.png");
+                    navbarBrandImg.css("opacity", 1);
+                    navbar.css("height", "70px");
+                    
+                } else {
+                    navbar.animate({ height: "90px" }, 200);
+                    navbar.removeClass("navbar-solid");
+                    navbarBrandImg.css("opacity", 1);
+                    navbarBrandImg.attr("src", "/Logo/Logoinv.png");
+                    
+                }
+            });
+
+            navbar.hover(
+                function () {
+                    if (!navbar.hasClass("navbar-solid")) {
+                        navbar.addClass("navbar-solid");
+                        navbarBrandImg.css("opacity", 0);
+                        navbarBrandImg.attr("src", "/Logo/Logo.png");
+                        navbarBrandImg.css("opacity", 1);
+                    }
+                },
+                function () {
+                    if ($(window).scrollTop() <= 50) {
+                        navbar.removeClass("navbar-solid");
+                        navbarBrandImg.css("opacity", 1);
+                        navbarBrandImg.attr("src", "/Logo/Logoinv.png");
+                    }
+                }
+            );
+        });
+    </script>
+
+
+
 </body>
 </html>

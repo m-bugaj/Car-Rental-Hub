@@ -5,6 +5,178 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<styles>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    }
+
+    .overlay {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    top: 0;
+    left: 0;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    }
+
+    .loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    }
+
+    @@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+    }
+
+    /* Dodaj dodatkowe style dla reszty strony */
+    .content {
+    /* Dodaj odpowiednie style dla reszty zawartości strony */
+    }
+
+</styles>
+
+<!-- Dodaj overlay i animację ładowania -->
+<div id="overlay" class="overlay">
+    <div class="loader"></div>
+</div>
+
+<script>
+    // Funkcja do pokazania overlaya z animacją ładowania
+function showLoader() {
+    document.getElementById('overlay').style.display = 'flex';
+}
+
+// Funkcja do ukrycia overlaya po zakończeniu ładowania
+function hideLoader() {
+    document.getElementById('overlay').style.display = 'none';
+}
+
+// Wywołaj funkcję showLoader() przed przekierowaniem
+showLoader();
+
+// Wywołaj funkcję hideLoader() po załadowaniu strony
+window.onload = function() {
+    hideLoader();
+};
+
+</script>
+
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        /* overflow: hidden; */
+    }
+
+    .header-containerr {
+
+        width: 100%;
+        height: 20px;
+        overflow: hidden;
+    }
+
+    .header-gradient {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 90%; /* Wysokość gradientu */
+        background: linear-gradient(to bottom right, #0077cc, #004466); /* Gradient diagonalny w odcieniach niebieskiego */
+    }
+
+    .header-shape {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        left: 0;
+        width: 100%;
+        height: 200px;
+        transform: translateY(90%);
+        margin-bottom: 500px;
+        background: transparent; /* Ustawienie tła na przeźroczyste */
+    }
+
+        .header-shape svg {
+            width: 100%;
+            height: 100%;
+            fill: white; /* Wyłączenie fill (wypełnienia) dla SVG */
+        }
+
+ 
+</style>
+
+<!-- Section 1 -->
+<div class="header-containerr">
+<div class="header-gradient"></div>
+<div class="header-shape wp-block-mailpoet-blocks-container wp-block-mailpoet-home-header diagonal-radient-2 seperator-absolute-bottom">
+    <svg preserveAspectRatio="none" viewBox="0 0 1320 235" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1320,0c-177,0.3-385.1,41.199-624.199,122.8C456.7,204.399,224.7,235.8,0,216.899v17.2h1320V0z"></path>
+    </svg>
+    <div class="wp-block-columns has-2-columns">
+        <!-- Pozostała treść sekcji 1 -->
+    </div>
+</div>
+</div>
+
+<script>
+    // Funkcja sprawdzająca i aktualizująca wysokość .header-gradient
+    function updateHeaderGradientHeight() {
+        var headerGradient = document.querySelector('.header-gradient');
+        var headerShape = document.querySelector('.header-shape')
+
+        if (window.innerWidth < 768) {
+            headerGradient.style.height = '100%';
+            headerShape.style.transform = 'translateY(200%)';
+        } 
+        else if (window.innerWidth < 1700) {
+            headerGradient.style.height = '94%';
+        }
+        else {
+            headerGradient.style.height = '90%';
+        }
+    }
+
+    function updateHeroSection() {
+        var heroSection = document.querySelector('.hero-section');
+
+        if (window.innerWidth < 768) {
+            heroSection.style.marginTop = '-230px';
+        }
+        else if (window.innerWidth < 1700) {
+            heroSection.style.marginTop = '-175px';
+        }
+        // else {
+        //     heroSection.style.margin - top = '90%';
+        // }
+    }
+
+    // Wywołaj funkcję po załadowaniu strony
+    document.addEventListener('DOMContentLoaded', function () {
+        // Wywołaj funkcję na starcie
+        updateHeaderGradientHeight();
+        updateHeroSection();
+
+        // Dodaj nasłuchiwanie na zmiany rozmiaru okna
+        window.addEventListener('resize', function () {
+            // Ponownie wywołaj funkcję przy zmianie rozmiaru okna
+            updateHeaderGradientHeight();
+            updateHeroSection();
+        });
+    });
+</script>
+
+
 <style>
     body {
         margin: 0;
@@ -17,7 +189,7 @@
         color: #fff;
         padding: 50px 10px;
         border-radius: 20px;
-        margin-top: -50px;
+        margin-top: -140px;
         margin-bottom: 20px;
         margin-left: 30px;
         margin-right: 30px;
@@ -30,8 +202,8 @@
         font-size: 1.3rem;
         font-weight: 300;
         padding: 12px 25px;
-        background-color: #ffffff;
-        color: #000000;
+        background-color: #1a1a1a;
+        color: #ffffff;
         border: none;
         border-radius: 10px;
         cursor: pointer;
@@ -39,8 +211,8 @@
     }
 
         .custom-button:hover {
-            background-color: #1a1a1a;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
         }
 
     .form-title {
@@ -64,9 +236,7 @@
         vertical-align: middle; /* Wyśrodkuj w pionie */
     }
 
-
 </style>
-
 
 <div class="hero-section">
 
@@ -77,9 +247,9 @@
     <div class="container text-center">
 
         <h2 class="text-center mb-5 display-4 mb">Znajdź swój samochód!</h2>
-        
+
         <form asp-controller="Cars" asp-action="Index" method="get">
-            
+
             <div class="row">
                 <!-- Pierwszy rząd -->
                 <div class="col-md-4 mb-3">
@@ -179,7 +349,11 @@
 
                 <!-- Przycisk Szukaj -->
                 <div class="col-md-12 text-center mt-4">
-                    <button type="submit" class="custom-button">Szukaj</button>
+                    <button type="submit" class="custom-button">Szukaj
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search search-icon" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </form>
@@ -261,4 +435,3 @@
         $('#selectedModel').change();
     });
 </script>
-
