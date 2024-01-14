@@ -178,13 +178,19 @@ namespace CarRentalHub.Controllers
 
         // Rezerwacja auta na dany termin
         [HttpPost]
-        public IActionResult AddAvailability(int carId, DateTime startDate, DateTime endDate)
+        public IActionResult AddAvailability(int carId, DateTime startDate, DateTime endDate, string email, string phone, string userId)
         {
+            var reservationDate = DateTime.Now.Date;
+
             var newAvailability = new CarAvailability
             {
                 CarID = carId,
                 StartDate = startDate,
-                EndDate = endDate
+                EndDate = endDate,
+                Email = email,
+                Phone = phone,
+                UserId = userId,
+                ReservationDate = reservationDate
             };
 
             _carAvailabilityContext.Add(newAvailability);
@@ -209,6 +215,10 @@ namespace CarRentalHub.Controllers
                 return NotFound();
             }
 
+
+            // Get logged in userId
+            var userId = _userManager.GetUserId(User);
+
             // Pobierz rzeczywiste niedostępne daty z bazy danych
             var niedostepneDatyQuery = _carAvailabilityContext.CarAvailability
                 .Where(ca => ca.CarID == id)
@@ -226,6 +236,7 @@ namespace CarRentalHub.Controllers
             );
 
             ViewData["CurrentAdvertisementId"] = id;
+            ViewData["UserId"] = userId;
 
             return View(model);
         }

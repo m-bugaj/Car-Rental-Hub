@@ -270,9 +270,10 @@
                         <input type="hidden" name="carId" value="@ViewBag.CurrentAdvertisementId" />
                         <input type="hidden" id="startDateInput" name="startDate" />
                         <input type="hidden" id="endDateInput" name="endDate" />
+                        <input type="hidden" name="userId" value="@ViewBag.UserId" />
 
                         <button type="button" class="btn btn-primary mt-3" style="background-color: gray; padding: 15px 30px; border: none;" disabled onclick="showConfirmationModal()">Rezerwuj!</button>
-                    }
+                    
 
                     <!-- Modal -->
                     <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
@@ -285,18 +286,58 @@
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    Czy na pewno chcesz zarezerwować samochód na dany termin?
+                                    <p>Czy na pewno chcesz zarezerwować samochód na dany termin?</p>
+                                    <div class="form-group">
+                                        <label for="email">Adres e-mail:</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Wprowadź swój e-mail" required pattern="[a-z0-9._%+-]+@@[a-z0-9.-]+\.[a-z]{2,}$">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="phone">Numer telefonu:</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="Wprowadź swój numer telefonu" required pattern="[0-9]{9,15}">
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeConfirmationModal()">Anuluj</button>
-                                    <button type="button" class="btn btn-primary" style="border: none;" onclick="confirmReservation()">Rezerwuj</button>
+                                        <button type="button" class="btn btn-primary" style="border: none;" onclick="validateData()">Rezerwuj</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                    }
                 </div>
             </div>
+
+            <script>
+                function showConfirmationModal() {
+                    $('#confirmationModal').modal('show');
+                }
+
+                function closeConfirmationModal() {
+                    $('#confirmationModal').modal('hide');
+                }
+
+                function validateData() {
+                    // Pobierz wartości pól e-mail i telefon
+                    var emailValue = document.getElementById('email').value;
+                    var phoneValue = document.getElementById('phone').value;
+
+                    // Sprawdź, czy pola nie są puste
+                    if (emailValue.trim() === '' || phoneValue.trim() === '') {
+                        alert('Wprowadź adres e-mail i numer telefonu przed rezerwacją.');
+                    } else {
+                        // Pola nie są puste, kontynuuj z potwierdzeniem rezerwacji
+                        confirmReservation()
+                    }
+                }
+
+                function confirmReservation() {
+                    // Dodaj kod do sprawdzenia poprawności formularza przed przesłaniem, jeśli to konieczne
+                    // document.getElementById("startDateInput").value = /* wartość daty początkowej */;
+                    // document.getElementById("endDateInput").value = /* wartość daty końcowej */;
+
+                    document.getElementById("availabilityForm").submit();
+                }
+            </script>
 
         </div>
     </div>
