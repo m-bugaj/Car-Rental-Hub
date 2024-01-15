@@ -7,6 +7,9 @@
 
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <style>
+
+    </style>
 
 </head>
 
@@ -17,6 +20,12 @@
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
     </li> *@
         
+    <li>
+        <a class="nav-link rounded" asp-area="" asp-controller="Cars" asp-action="MyReservations">
+            <i class="fas fa-list"></i> Moje rezerwacje
+        </a>
+    </li>
+
 
     <li>
             <a class="nav-link text-light rounded" asp-area="" asp-controller="Cars" asp-action="Create" style="background: linear-gradient(to bottom, #3498db, #2980b9);">

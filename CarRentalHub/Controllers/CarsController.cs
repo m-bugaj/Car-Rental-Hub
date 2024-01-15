@@ -575,6 +575,41 @@ namespace CarRentalHub.Controllers
                 .Distinct()
                 .ToList();
         }
+
+        // GET: Cars/MyReservations/
+        public async Task<IActionResult> MyReservations()
+        {
+            // Ustawienie dostępu do edycji ogłoszenia
+            var userId = _userManager.GetUserId(User);
+
+            // Wybierz rezerwacje z bazy danych, gdzie UserId jest równe userId
+            var reservations = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+
+            // Pobierz ID zarezerwowanych samochodów
+            var reservedCarIds = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.UserId == userId)
+                .Select(r => r.CarID)
+                .ToListAsync();
+
+            if (reservations == null)
+            {
+                return NotFound();
+            }
+
+            // Wybierz auta z CarInfoModel, których ID występuje w zarezerwowanych CarID
+            var bookedCarsInfo = _context.CarInfoModel
+                .Where(b => reservedCarIds.Contains(b.ID))
+                .ToList();
+
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>, IEnumerable<CarAvailability>>(
+                    bookedCarsInfo,
+                    await _photoContext.Photo.ToListAsync(),
+                    reservations
+                    );
+            return View(model);
+        }
     }
 
     public class FilterParameters

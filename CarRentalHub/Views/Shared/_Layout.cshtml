@@ -55,9 +55,9 @@
                 background-color: white;
             }
 
-            .navbar a.nav-link:hover {
+            /* .navbar a.nav-link:hover {
                 color: white !important;
-            }
+            } */
 
         .navbar-brand img {
             max-height: 100%;
@@ -80,6 +80,9 @@
             opacity: 0;
         }
 
+        .nav-link {
+            color: white
+        }
 
     </style>
 
@@ -141,6 +144,7 @@
             var navbar = $(".navbar");
             var navbarBrandImg = $(".navbar-brand img.logo");
             var logoInvSrc = "/Logo/Logoinv.png";
+            var myReservationButton = $(".nav-link");
 
 
             $(window).scroll(function () {
@@ -151,12 +155,14 @@
                     navbarBrandImg.attr("src", "/Logo/Logo.png");
                     navbarBrandImg.css("opacity", 1);
                     navbar.css("height", "70px");
+                    myReservationButton.css("color", "black");
                     
                 } else {
                     navbar.animate({ height: "90px" }, 200);
                     navbar.removeClass("navbar-solid");
                     navbarBrandImg.css("opacity", 1);
                     navbarBrandImg.attr("src", "/Logo/Logoinv.png");
+                    myReservationButton.css("color", "white");
                     
                 }
             });
@@ -168,6 +174,7 @@
                         navbarBrandImg.css("opacity", 0);
                         navbarBrandImg.attr("src", "/Logo/Logo.png");
                         navbarBrandImg.css("opacity", 1);
+                        myReservationButton.css("color", "black");
                     }
                 },
                 function () {
@@ -175,6 +182,7 @@
                         navbar.removeClass("navbar-solid");
                         navbarBrandImg.css("opacity", 1);
                         navbarBrandImg.attr("src", "/Logo/Logoinv.png");
+                        myReservationButton.css("color", "white");
                     }
                 }
             );
