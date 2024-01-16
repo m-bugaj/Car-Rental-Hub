@@ -144,15 +144,15 @@
 
                         <li class="nav-item dropdown" style="list-style: none;">
                             <div class="btn-group">
-                                <button type="button" class="btn btn-secondary btn-lg custom-split" style="background: lightseagreen; color: #fff; border: none;" onclick="changePanelAndNavigate('client')">
-                                    Panel klienta
+                                <button type="button" class="btn btn-secondary btn-lg custom-split" style="background: lightseagreen; color: #fff; border: none;" onclick="redirectToPage()">
+                                    <span id="clientPanelText">Panel klienta</span>
                                 </button>
                                 <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split custom-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: lightseagreen; border: none; color: #fff;">
                                     <span class="visually-hidden">Toggle Dropdown</span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-dark custom-split" aria-labelledby="navbarDarkDropdownMenuLink" style="background: linear-gradient(to bottom, #3498db, #2980b9);">
-                                    <li><a class="dropdown-item custom-list" href="" onclick="changePanelAndNavigate('client')">Panel klienta</a></li>
-                                    <li><a class="dropdown-item custom-list" href="" onclick="changePanelAndNavigate('seller')">Panel sprzedawcy</a></li>
+                                    <li><a class="dropdown-item custom-list" href="/Cars/MyReservations" onclick="changePanelAndNavigate('client')">Panel klienta</a></li>
+                                    <li><a class="dropdown-item custom-list" href="/Cars" onclick="changePanelAndNavigate('seller')">Panel sprzedawcy</a></li>
                                     <!-- Dodaj inne elementy dropdown, jeśli są potrzebne -->
                                 </ul>
 
@@ -198,17 +198,7 @@
 
 
     <script>
-        function getCurrentPanelFromURL() {
-            var urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('panel');
-        }
-
-        function setCurrentPanelToURL(panelType) {
-            var urlParams = new URLSearchParams(window.location.search);
-            urlParams.set('panel', panelType);
-            var newUrl = `${location.pathname}?${urlParams}`;
-            window.history.replaceState({}, '', newUrl);
-        }
+        var isCodeExecuted = false;
 
         $(document).ready(function () {
             var navbar = $(".navbar");
@@ -220,14 +210,12 @@
             var dropDownHover = $(".dropdown-item:hover");
             var myReservationsNavItem = $(".nav-link-reservation");
 
-            var currentPanel = getCurrentPanelFromURL();
-            console.log('Current panel on page load:', currentPanel);
-            if (currentPanel) {
-                // Sprawdź, czy aktualny panel to jeden z obsługiwanych, aby uniknąć domyślnego ustawiania "Panel klienta"
-                if (currentPanel === 'client' || currentPanel === 'seller') {
-                    changePanelAndNavigate(currentPanel);
-                    changePanel(currentPanel);
-                }
+            // Odczytaj wybór panelu z pliku cookie przy ładowaniu strony
+            var panelType = getCookie("PanelType");
+
+            // Ustaw odpowiedni panel na podstawie wyboru
+            if (panelType) {
+                changePanelAndNavigate(panelType);
             }
 
 
@@ -287,17 +275,38 @@
             );
         });
 
-        function changePanelAndNavigate(panelType) {
-            setCurrentPanelToURL(panelType);  // Ustaw aktualny panel w adresie URL
-            changePanel(panelType);
-            if (panelType === 'client') {
-                window.location.replace('/Cars/MyReservations');
-            } else if (panelType === 'seller') {
-                window.location.replace('/Cars');
-            }
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length == 2) return parts.pop().split(";").shift();
         }
 
+        function changePanelAndNavigate(panelType) {
+            // console.log('Zmiana panelu na:', panelType);
 
+            toggleMyReservationsNavItem(panelType);
+
+            if (panelType == 'seller') {
+                document.getElementById('clientPanelText').innerText = "Panel sprzedawcy";
+            }
+
+            // Wysyła żądanie do akcji kontrolera ChangePanel
+            $.ajax({
+                url: '/Panel/ChangePanel',
+                type: 'POST',
+                data: { panelType: panelType },
+                success: function () {
+                    // Tutaj możesz obsłużyć sukces, jeśli to konieczne
+                    console.log('Zmiana panelu udana');
+                    // window.location.href = '/Cars/MyReservations';
+                },
+                error: function () {
+                    // Obsłuż błąd, jeśli to konieczne
+                    console.error('Błąd podczas zmiany panelu');
+                }
+            });
+            
+        }
 
         function toggleMyReservationsNavItem(panelType) {
             var myReservationsNavItem = $(".nav-link-reservation")[0]; // Pobierz pierwszy element z obiektu jQuery
@@ -309,17 +318,14 @@
             }
         }
 
-        function changePanel(panelType) {
-            var buttonText = document.querySelector(".btn-group .btn");
+        function redirectToPage() {
+            var panelType = getCookie("PanelType");
 
-            if (panelType === 'client') {
-                buttonText.innerHTML = "Panel klienta";
-            } else if (panelType === 'seller') {
-                buttonText.innerHTML = "Panel sprzedawcy";
+            if (panelType == "seller") {
+                window.location.href = '/Cars';
+            } else if (panelType == "client") {
+                window.location.href = '/Cars/MyReservations';
             }
-
-            // Wywołaj, aby ukryć/przesunąć widoczność przycisku
-            toggleMyReservationsNavItem(panelType);
         }
 
         document.querySelector('.btn-group').addEventListener('mouseenter', function () {
