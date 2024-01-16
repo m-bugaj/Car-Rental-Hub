@@ -16,6 +16,9 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
+    <script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+
+
     @* <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
     <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script> *@
@@ -80,9 +83,29 @@
             opacity: 0;
         }
 
-        .nav-link {
-            color: white
+        .nav-link-reservation {
+            color: white; 
+            /* display: none; */
         }
+
+        .custom-split {
+            background: lightseagreen;
+            color: #fff;
+        }
+
+            .custom-split:hover,
+            .dropdown-menu.show {
+                background: darkseagreen; /* Kolor tła po najechaniu i w rozwiniętej liście */
+            }
+
+            .dropdown-item:hover {
+            background: darkseagreen;
+            }
+
+            .custom-list {
+                color: #fff;
+            }
+
 
     </style>
 
@@ -102,11 +125,46 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 text-center">
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link btn btn-link text-white border-0 nav-link-padding" asp-area="" asp-controller="Cars" asp-action="Index" style="background-color: lightseagreen;">
                                 Pełna lista samochodów
                             </a>
                         </li>
+
+                        <li class="nav-item dropdown" style="background: linear-gradient(to bottom, #3498db, #2980b9); border-radius: 0.25rem;">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: #fff;">
+                                Panel klienta
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                                <li><a class="dropdown-item" href="#" onclick="changePanel('client')">Panel klienta</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="changePanel('seller')">Panel sprzedawcy</a></li>
+                                <!-- Dodaj inne elementy dropdown, jeśli są potrzebne -->
+                            </ul>
+                        </li> *@
+
+                        <li class="nav-item dropdown" style="list-style: none;">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-secondary btn-lg custom-split" style="background: lightseagreen; color: #fff; border: none;" onclick="changePanelAndNavigate('client')">
+                                    Panel klienta
+                                </button>
+                                <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split custom-split" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background: lightseagreen; border: none; color: #fff;">
+                                    <span class="visually-hidden">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark custom-split" aria-labelledby="navbarDarkDropdownMenuLink" style="background: linear-gradient(to bottom, #3498db, #2980b9);">
+                                    <li><a class="dropdown-item custom-list" href="" onclick="changePanelAndNavigate('client')">Panel klienta</a></li>
+                                    <li><a class="dropdown-item custom-list" href="" onclick="changePanelAndNavigate('seller')">Panel sprzedawcy</a></li>
+                                    <!-- Dodaj inne elementy dropdown, jeśli są potrzebne -->
+                                </ul>
+
+                            </div>
+                        </li>
+
+
+                        
+
+
+
+                        
                         <!-- Dodaj inne elementy menu według potrzeb -->
                     </ul>
                 </div>
@@ -140,11 +198,37 @@
 
 
     <script>
+        function getCurrentPanelFromURL() {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('panel');
+        }
+
+        function setCurrentPanelToURL(panelType) {
+            var urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('panel', panelType);
+            var newUrl = `${location.pathname}?${urlParams}`;
+            window.history.replaceState({}, '', newUrl);
+        }
+
         $(document).ready(function () {
             var navbar = $(".navbar");
             var navbarBrandImg = $(".navbar-brand img.logo");
             var logoInvSrc = "/Logo/Logoinv.png";
-            var myReservationButton = $(".nav-link");
+            var myReservationButton = $(".nav-link-reservation");
+            var splitButton = $(".custom-split");
+            var listButton = $(".custom-list");
+            var dropDownHover = $(".dropdown-item:hover");
+            var myReservationsNavItem = $(".nav-link-reservation");
+
+            var currentPanel = getCurrentPanelFromURL();
+            console.log('Current panel on page load:', currentPanel);
+            if (currentPanel) {
+                // Sprawdź, czy aktualny panel to jeden z obsługiwanych, aby uniknąć domyślnego ustawiania "Panel klienta"
+                if (currentPanel === 'client' || currentPanel === 'seller') {
+                    changePanelAndNavigate(currentPanel);
+                    changePanel(currentPanel);
+                }
+            }
 
 
             $(window).scroll(function () {
@@ -156,6 +240,10 @@
                     navbarBrandImg.css("opacity", 1);
                     navbar.css("height", "70px");
                     myReservationButton.css("color", "black");
+                    splitButton.css("background", "#EBECEF");
+                    splitButton.css("color", "black");
+                    dropDownHover.css("background", "black");
+                    listButton.css("color", "black");
                     
                 } else {
                     navbar.animate({ height: "90px" }, 200);
@@ -163,7 +251,10 @@
                     navbarBrandImg.css("opacity", 1);
                     navbarBrandImg.attr("src", "/Logo/Logoinv.png");
                     myReservationButton.css("color", "white");
-                    
+                    splitButton.css("background", "lightseagreen");
+                    splitButton.css("color", "#fff");
+                    dropDownHover.css("background", "black");
+                    listButton.css("color", "#fff");
                 }
             });
 
@@ -175,6 +266,10 @@
                         navbarBrandImg.attr("src", "/Logo/Logo.png");
                         navbarBrandImg.css("opacity", 1);
                         myReservationButton.css("color", "black");
+                        splitButton.css("background", "#EBECEF");
+                        splitButton.css("color", "black");
+                        dropDownHover.css("background", "black");
+                        listButton.css("color", "black");
                     }
                 },
                 function () {
@@ -183,10 +278,55 @@
                         navbarBrandImg.css("opacity", 1);
                         navbarBrandImg.attr("src", "/Logo/Logoinv.png");
                         myReservationButton.css("color", "white");
+                        splitButton.css("background", "lightseagreen");
+                        splitButton.css("color", "#fff");
+                        dropDownHover.css("background", "black");
+                        listButton.css("color", "#fff");
                     }
                 }
             );
         });
+
+        function changePanelAndNavigate(panelType) {
+            setCurrentPanelToURL(panelType);  // Ustaw aktualny panel w adresie URL
+            changePanel(panelType);
+            if (panelType === 'client') {
+                window.location.replace('/Cars/MyReservations');
+            } else if (panelType === 'seller') {
+                window.location.replace('/Cars');
+            }
+        }
+
+
+
+        function toggleMyReservationsNavItem(panelType) {
+            var myReservationsNavItem = $(".nav-link-reservation")[0]; // Pobierz pierwszy element z obiektu jQuery
+
+            if (panelType === 'client') {
+                myReservationsNavItem.style.display = 'block';  // Pokaż przycisk
+            } else if (panelType === 'seller') {
+                myReservationsNavItem.style.display = 'none';   // Ukryj przycisk
+            }
+        }
+
+        function changePanel(panelType) {
+            var buttonText = document.querySelector(".btn-group .btn");
+
+            if (panelType === 'client') {
+                buttonText.innerHTML = "Panel klienta";
+            } else if (panelType === 'seller') {
+                buttonText.innerHTML = "Panel sprzedawcy";
+            }
+
+            // Wywołaj, aby ukryć/przesunąć widoczność przycisku
+            toggleMyReservationsNavItem(panelType);
+        }
+
+        document.querySelector('.btn-group').addEventListener('mouseenter', function () {
+            $('[data-bs-toggle="dropdown"]').dropdown('toggle');
+        });
+
+
     </script>
 
 

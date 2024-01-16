@@ -20,11 +20,11 @@
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
     </li> *@
         
-    <li>
-        <a class="nav-link rounded" asp-area="" asp-controller="Cars" asp-action="MyReservations">
-            <i class="fas fa-list"></i> Moje rezerwacje
-        </a>
-    </li>
+        <li id="myReservationsNavItem">
+            <a class="nav-link rounded nav-link-reservation" asp-area="" asp-controller="Cars" asp-action="MyReservations">
+                <i class="fas fa-list"></i> Moje rezerwacje
+            </a>
+        </li>
 
 
     <li>
