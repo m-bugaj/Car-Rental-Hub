@@ -244,8 +244,31 @@ namespace CarRentalHub.Controllers
         // GET: Cars/Create
         public IActionResult Create()
         {
-			// Typ nadwozia
-			List<string> bodyType = new List<string> { "Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv" };
+            ViewBag.DostepneMarki = PobierzListeMarek();
+
+            // Uzyskaj pierwszą markę z listy
+            var pierwszaMarka = (ViewBag.DostepneMarki as List<SelectListItem>)?.FirstOrDefault()?.Value;
+
+            // Pobierz dostępne modele dla pierwszej marki
+            var dostepneModele = PobierzModeleZBazy(pierwszaMarka);
+
+            // Konwertuj listę modeli na listę SelectListItem
+            ViewBag.DostepneModele = dostepneModele.Select(model => new SelectListItem { Value = model, Text = model }).ToList();
+
+            // Generacje
+            var firstCarModel = (ViewBag.DostepneModele as List<SelectListItem>)?.FirstOrDefault()?.Value;
+            ViewBag.AvailableGenerations = GetGenerationFromDatabase(firstCarModel);
+
+            // Lata
+            var years = Enumerable.Range(1900, DateTime.Now.Year - 1899).OrderByDescending(y => y).ToList();
+            ViewBag.AvailableYears = years;
+
+            // Typ paliwa
+            List<string> fuelType = new List<string> { "Benzyna", "Benzyna+CNG", "Benzyna+LPG", "Diesel", "Elektryczny", "Etanol", "Hybryda", "Wodór" };
+            ViewBag.FuelType = fuelType.Select(item => new SelectListItem { Text = item, Value = item }).ToList();
+
+            // Typ nadwozia
+            List<string> bodyType = new List<string> { "Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv" };
 			ViewBag.BodyType = bodyType.Select(item => new SelectListItem { Text = item, Value = item }).ToList();
 
 			var model = new Car
@@ -328,6 +351,33 @@ namespace CarRentalHub.Controllers
         // GET: Cars/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.DostepneMarki = PobierzListeMarek();
+
+            // Uzyskaj pierwszą markę z listy
+            var pierwszaMarka = (ViewBag.DostepneMarki as List<SelectListItem>)?.FirstOrDefault()?.Value;
+
+            // Pobierz dostępne modele dla pierwszej marki
+            var dostepneModele = PobierzModeleZBazy(pierwszaMarka);
+
+            // Konwertuj listę modeli na listę SelectListItem
+            ViewBag.DostepneModele = dostepneModele.Select(model => new SelectListItem { Value = model, Text = model }).ToList();
+
+            // Generacje
+            var firstCarModel = (ViewBag.DostepneModele as List<SelectListItem>)?.FirstOrDefault()?.Value;
+            ViewBag.AvailableGenerations = GetGenerationFromDatabase(firstCarModel);
+
+            // Lata
+            var years = Enumerable.Range(1900, DateTime.Now.Year - 1899).OrderByDescending(y => y).ToList();
+            ViewBag.AvailableYears = years;
+
+            // Typ paliwa
+            List<string> fuelType = new List<string> { "Benzyna", "Benzyna+CNG", "Benzyna+LPG", "Diesel", "Elektryczny", "Etanol", "Hybryda", "Wodór" };
+            ViewBag.FuelType = fuelType.Select(item => new SelectListItem { Text = item, Value = item }).ToList();
+
+            // Typ nadwozia
+            List<string> bodyType = new List<string> { "Auta małe", "Auta miejskie", "Coupe", "Kabriolet", "Kombi", "Kompakt", "Minivan", "Sedan", "Suv" };
+            ViewBag.BodyType = bodyType.Select(item => new SelectListItem { Text = item, Value = item }).ToList();
+
             if (id == null)
             {
                 return NotFound();
@@ -346,10 +396,12 @@ namespace CarRentalHub.Controllers
                 return Forbid(); // Możesz również użyć return Unauthorized();
             }
 
-            var model = new Tuple<Car, IEnumerable<Photo>>(
+            var model = new Tuple<Car, IEnumerable<Photo>, List<int>>(
                 car,
-                await _photoContext.Photo.ToListAsync()
+                await _photoContext.Photo.ToListAsync(),
+                Enumerable.Range(1900, DateTime.Now.Year - 1899).Reverse().ToList()
             );
+
 
             ViewData["CurrentAdvertisementId"] = id;
 
@@ -610,6 +662,39 @@ namespace CarRentalHub.Controllers
                     );
             return View(model);
         }
+
+        public async Task<IActionResult> MyOffers()
+        {
+            // Ustawienie dostępu do edycji ogłoszenia
+            var userId = _userManager.GetUserId(User);
+
+            var myCars = await _context.CarInfoModel
+                .Where(c => c.UserId == userId)
+                .ToListAsync();
+
+            var myCarsIds = await _context.CarInfoModel
+                .Where(c => c.UserId == userId)
+                .Select(c => c.ID)
+                .ToListAsync();
+
+            if (myCars == null)
+            {
+                return NotFound();
+            }
+
+            // Wybierz auta z CarInfo, których ID występuje w zarezerwowanych CarID
+            var myCarsInfo = _carAvailabilityContext.CarAvailability
+                .Where(m => myCarsIds.Contains(m.CarID))
+                .ToList();
+
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>, IEnumerable<CarAvailability>>(
+                    myCars,
+                    await _photoContext.Photo.ToListAsync(),
+                    myCarsInfo
+                    );
+            return View(model);
+        }
+
     }
 
     public class FilterParameters

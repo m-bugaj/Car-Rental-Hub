@@ -1,12 +1,28 @@
-﻿@model Tuple<CarRentalHub.Models.Car, IEnumerable<CarRentalHub.Models.Photo>>
+﻿@model Tuple<CarRentalHub.Models.Car, IEnumerable<CarRentalHub.Models.Photo>, List<int>>
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<style>
+    .custom-select-height {
+        height: 60px;
+    }
 
-<h4>Car</h4>
+    .header-gradient {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 90px; /* Wysokość gradientu */
+        background: linear-gradient(to bottom right, #0077cc, #004466); /* Gradient diagonalny w odcieniach niebieskiego */
+    }
+</style>
+
+<div class="header-gradient"></div>
+
+<h1>Edytuj ogłoszenie</h1>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,48 +30,74 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Item1.ID" />
             <div class="form-group">
-                <label asp-for="Item1.VehicleBrand" class="control-label"></label>
-                <input asp-for="Item1.VehicleBrand" class="form-control" />
-                <span asp-validation-for="Item1.VehicleBrand" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.VehicleBrand" class="control-label"></label>
+                    <select asp-for="Item1.VehicleBrand" asp-items="@ViewBag.DostepneMarki" id="selectedMarka" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Wybierz markę</option>
+                    </select>
+                    <span asp-validation-for="Item1.VehicleBrand" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.CarModel" class="control-label"></label>
-                <input asp-for="Item1.CarModel" class="form-control" />
-                <span asp-validation-for="Item1.CarModel" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.CarModel" class="control-label"></label>
+                    <select asp-for="Item1.CarModel" asp-items="@ViewBag.DostepneModele" id="selectedModel" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Wybierz model</option>
+                    </select>
+                    <span asp-validation-for="Item1.CarModel" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.Generation" class="control-label"></label>
-                <input asp-for="Item1.Generation" class="form-control" />
-                <span asp-validation-for="Item1.Generation" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.Generation" class="control-label"></label>
+                    <select asp-for="Item1.Generation" asp-items="@ViewBag.DostepneGeneracje" id="selectedGeneration" class="form-control custom-select" style="height: 60px;">
+                        <option value="" selected>Wybierz generację</option>
+                    </select>
+                    <span asp-validation-for="Item1.Generation" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.BodyType" class="control-label"></label>
-                <input asp-for="Item1.BodyType" class="form-control" />
-                <span asp-validation-for="Item1.BodyType" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.BodyType" class="control-label"></label>
+                    <select asp-for="Item1.BodyType" asp-items="@ViewBag.BodyType" class="form-control" style="height: 60px;">
+                        <option value="" selected>Typ nadwozia</option>
+                    </select>
+                    <span asp-validation-for="Item1.BodyType" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.YearOfProduction" class="control-label"></label>
-                <input asp-for="Item1.YearOfProduction" class="form-control" />
-                <span asp-validation-for="Item1.YearOfProduction" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.YearOfProduction" class="control-label"></label>
+                    <div>
+                        @Html.DropDownListFor(model => model.Item1.YearOfProduction, new SelectList(Model.Item3), "Wybierz rok", new { @class = "form-control custom-select-height" })
+                        <span asp-validation-for="Item1.YearOfProduction" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.FuelType" class="control-label"></label>
-                <input asp-for="Item1.FuelType" class="form-control" />
-                <span asp-validation-for="Item1.FuelType" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.FuelType" class="control-label"></label>
+                    <select asp-for="Item1.FuelType" asp-items="@ViewBag.FuelType" class="form-control" style="height: 60px;">
+                        <option value="" selected>Typ paliwa</option>
+                    </select>
+                    <span asp-validation-for="Item1.FuelType" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.Mileage" class="control-label"></label>
-                <input asp-for="Item1.Mileage" class="form-control" />
-                <span asp-validation-for="Item1.Mileage" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.Mileage" class="control-label"></label>
+                    <input asp-for="Item1.Mileage" class="form-control" style="height: 60px;" />
+                    <span asp-validation-for="Item1.Mileage" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="Item1.Price" class="control-label"></label>
-                <input asp-for="Item1.Price" class="form-control" />
-                <span asp-validation-for="Item1.Price" class="text-danger"></span>
+                <div class="col-md-7 mb-3">
+                    <label asp-for="Item1.Price" class="control-label"></label>
+                    <input asp-for="Item1.Price" class="form-control" style="height: 60px;" />
+                    <span asp-validation-for="Item1.Price" class="text-danger"></span>
+                </div>
             </div>
-            @* <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div> *@
+
             <div class="form-group">
                 <label asp-for="Item1.Photos" class="control-label">Dodaj nowe zdjęcia</label>
                 <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
@@ -231,6 +273,98 @@
     }
 
 
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        var defaultCarModel = '@Model.Item1.CarModel';
+        var defaultCarGeneration = '@Model.Item1.Generation';
+         
+
+        // Obsługa zdarzenia zmiany wyboru dla selectedMarka
+        $('#selectedMarka').change(function () {
+            // Pobierz wartość wybranej marki
+            var selectedMarka = $(this).val();
+
+            // Jeśli wybrano markę, usuń domyślną opcję
+            if (selectedMarka) {
+                $('#selectedMarka option[value=""]').remove();
+            }
+
+            // Wywołaj akcję w kontrolerze, aby uzyskać modele dla danej marki
+            $.getJSON('/FilterData/PobierzModele', { marka: selectedMarka }, function (data) {
+                // Wyczyść istniejące opcje w selectedModel
+                $('#selectedModel').empty();
+
+                // Dodaj domyślną opcję do selectedModel
+                $('#selectedModel').append($('<option>', {
+                    value: '',
+                    text: 'Wybierz model',
+                    disabled: true,
+                    selected: !defaultCarModel // Ustaw selected tylko jeśli defaultCarModel jest puste
+                }));
+
+                // Dodaj nowe opcje do selectedModel
+                $.each(data, function (index, model) {
+                    $('#selectedModel').append($('<option>', {
+                        value: model,
+                        text: model
+                    }));
+                });
+
+                // Ustaw wartość defaultCarModel jako wybraną
+                $('#selectedModel').val(defaultCarModel);
+                $('#selectedModel').change();
+            });
+        });
+
+        // Obsługa zdarzenia zmiany wyboru dla selectedModel
+        $('#selectedModel').change(function () {
+            // Pobierz wartość wybranego modelu
+            var selectedModel = $(this).val();
+
+            
+
+
+            // Jeśli wybrano model, usuń domyślną opcję
+            if (selectedModel) {
+                $('#selectedModel option[value=""]').remove();
+            } 
+
+            // Wywołaj akcję w kontrolerze, aby uzyskać generacje dla danego modelu
+            $.getJSON('/FilterData/GetGeneration', { carModel: selectedModel }, function (data) {
+                // Wyczyść istniejące opcje w selectedGeneration
+                $('#selectedGeneration').empty();
+
+                // Dodaj domyślną opcję do selectedModel
+                $('#selectedModel').append($('<option>', {
+                    value: '',
+                    text: 'Wybierz generację',
+                    disabled: true,
+                    selected: !defaultCarGeneration // Ustaw selected tylko jeśli defaultCarGeneration jest puste
+                }));
+
+                // Dodaj nowe opcje do selectedGeneration
+                $.each(data, function (index, generation) {
+                    $('#selectedGeneration').append($('<option>', {
+                        value: generation,
+                        text: generation
+                    }));
+                });
+
+                // Ustaw wartość defaultCarGeneration jako wybraną
+                $('#selectedGeneration').val(defaultCarGeneration);
+            });
+        });
+
+        // Wywołaj zdarzenie zmiany po załadowaniu strony, aby zainicjować dostępne modele
+        $('#selectedMarka').change();
+
+        // Wywołaj zdarzenie zmiany po załadowaniu strony, aby zainicjować dostępne generacje
+        $('#selectedModel').change();
+
+    });
 </script>
 
 

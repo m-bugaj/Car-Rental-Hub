@@ -49,7 +49,7 @@
             background-color: transparent;
             border: none;
             box-shadow: none;
-            transition: background-color 0.3s ease-in-out;
+            transition: background-color 0.3s ease-in;
             border-bottom: none !important;
             height: 90px; /* Dodaj wysokość */
         }
@@ -85,6 +85,11 @@
 
         .nav-link-reservation {
             color: white; 
+            /* display: none; */
+        }
+
+        .nav-link-offers {
+            color: white;
             /* display: none; */
         }
 
@@ -152,7 +157,7 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-dark custom-split" aria-labelledby="navbarDarkDropdownMenuLink" style="background: linear-gradient(to bottom, #3498db, #2980b9);">
                                     <li><a class="dropdown-item custom-list" href="/Cars/MyReservations" onclick="changePanelAndNavigate('client')">Panel klienta</a></li>
-                                    <li><a class="dropdown-item custom-list" href="/Cars" onclick="changePanelAndNavigate('seller')">Panel sprzedawcy</a></li>
+                                    <li><a class="dropdown-item custom-list" href="/Cars/MyOffers" onclick="changePanelAndNavigate('seller')">Panel sprzedawcy</a></li>
                                     <!-- Dodaj inne elementy dropdown, jeśli są potrzebne -->
                                 </ul>
 
@@ -209,6 +214,7 @@
             var listButton = $(".custom-list");
             var dropDownHover = $(".dropdown-item:hover");
             var myReservationsNavItem = $(".nav-link-reservation");
+            var myOffersButton = $(".nav-link-offers");
 
             // Odczytaj wybór panelu z pliku cookie przy ładowaniu strony
             var panelType = getCookie("PanelType");
@@ -228,6 +234,7 @@
                     navbarBrandImg.css("opacity", 1);
                     navbar.css("height", "70px");
                     myReservationButton.css("color", "black");
+                    myOffersButton.css("color", "black");
                     splitButton.css("background", "#EBECEF");
                     splitButton.css("color", "black");
                     dropDownHover.css("background", "black");
@@ -239,6 +246,7 @@
                     navbarBrandImg.css("opacity", 1);
                     navbarBrandImg.attr("src", "/Logo/Logoinv.png");
                     myReservationButton.css("color", "white");
+                    myOffersButton.css("color", "white");
                     splitButton.css("background", "lightseagreen");
                     splitButton.css("color", "#fff");
                     dropDownHover.css("background", "black");
@@ -254,6 +262,8 @@
                         navbarBrandImg.attr("src", "/Logo/Logo.png");
                         navbarBrandImg.css("opacity", 1);
                         myReservationButton.css("color", "black");
+                        myOffersButton.css("color", "black");
+
                         splitButton.css("background", "#EBECEF");
                         splitButton.css("color", "black");
                         dropDownHover.css("background", "black");
@@ -266,6 +276,7 @@
                         navbarBrandImg.css("opacity", 1);
                         navbarBrandImg.attr("src", "/Logo/Logoinv.png");
                         myReservationButton.css("color", "white");
+                        myOffersButton.css("color", "white");
                         splitButton.css("background", "lightseagreen");
                         splitButton.css("color", "#fff");
                         dropDownHover.css("background", "black");
@@ -310,11 +321,14 @@
 
         function toggleMyReservationsNavItem(panelType) {
             var myReservationsNavItem = $(".nav-link-reservation")[0]; // Pobierz pierwszy element z obiektu jQuery
+            var myOffersNavItem = $(".nav-link-offers")[0];
 
             if (panelType === 'client') {
                 myReservationsNavItem.style.display = 'block';  // Pokaż przycisk
+                myOffersNavItem.style.display = 'none';
             } else if (panelType === 'seller') {
                 myReservationsNavItem.style.display = 'none';   // Ukryj przycisk
+                myOffersNavItem.style.display = 'block';
             }
         }
 
@@ -322,7 +336,7 @@
             var panelType = getCookie("PanelType");
 
             if (panelType == "seller") {
-                window.location.href = '/Cars';
+                window.location.href = '/Cars/MyOffers';
             } else if (panelType == "client") {
                 window.location.href = '/Cars/MyReservations';
             }
