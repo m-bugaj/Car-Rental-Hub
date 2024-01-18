@@ -1,8 +1,11 @@
-﻿@model Tuple<CarRentalHub.Models.Car, IEnumerable<CarRentalHub.Models.Photo>, List<int>>
+﻿@model Tuple<CarRentalHub.Models.Car, IEnumerable<CarRentalHub.Models.Photo>>
 
 @{
     ViewData["Title"] = "Edit";
 }
+
+
+<body>
 
 <style>
     .custom-select-height {
@@ -24,15 +27,16 @@
 <h1>Edytuj ogłoszenie</h1>
 
 <hr />
-<div class="row">
+
     <div class="col-md-4">
         <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="row">
             <input type="hidden" asp-for="Item1.ID" />
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.VehicleBrand" class="control-label"></label>
-                    <select asp-for="Item1.VehicleBrand" asp-items="@ViewBag.DostepneMarki" id="selectedMarka" class="form-control custom-select" style="height: 60px;">
+                        <select asp-for="Item1.VehicleBrand" asp-items="@ViewBag.DostepneMarki" id="selectedMarka" name="VehicleBrand" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Wybierz markę</option>
                     </select>
                     <span asp-validation-for="Item1.VehicleBrand" class="text-danger"></span>
@@ -41,7 +45,7 @@
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.CarModel" class="control-label"></label>
-                    <select asp-for="Item1.CarModel" asp-items="@ViewBag.DostepneModele" id="selectedModel" class="form-control custom-select" style="height: 60px;">
+                        <select asp-for="Item1.CarModel" asp-items="@ViewBag.DostepneModele" id="selectedModel" name="CarModel" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Wybierz model</option>
                     </select>
                     <span asp-validation-for="Item1.CarModel" class="text-danger"></span>
@@ -50,7 +54,7 @@
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.Generation" class="control-label"></label>
-                    <select asp-for="Item1.Generation" asp-items="@ViewBag.DostepneGeneracje" id="selectedGeneration" class="form-control custom-select" style="height: 60px;">
+                        <select asp-for="Item1.Generation" asp-items="@ViewBag.DostepneGeneracje" id="selectedGeneration" name="Generation" class="form-control custom-select" style="height: 60px;">
                         <option value="" selected>Wybierz generację</option>
                     </select>
                     <span asp-validation-for="Item1.Generation" class="text-danger"></span>
@@ -59,41 +63,49 @@
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.BodyType" class="control-label"></label>
-                    <select asp-for="Item1.BodyType" asp-items="@ViewBag.BodyType" class="form-control" style="height: 60px;">
+                    <select asp-for="Item1.BodyType" asp-items="@ViewBag.BodyType" name="BodyType" class="form-control" style="height: 60px;">
                         <option value="" selected>Typ nadwozia</option>
                     </select>
                     <span asp-validation-for="Item1.BodyType" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-md-7 mb-3">
-                    <label asp-for="Item1.YearOfProduction" class="control-label"></label>
-                    <div>
-                        @Html.DropDownListFor(model => model.Item1.YearOfProduction, new SelectList(Model.Item3), "Wybierz rok", new { @class = "form-control custom-select-height" })
-                        <span asp-validation-for="Item1.YearOfProduction" class="text-danger"></span>
+                <div class="form-group">
+                    <div class="col-md-7 mb-3">
+                        <label asp-for="Item1.YearOfProduction" class="control-label"></label>
+                        <div>
+                            <select asp-for="Item1.YearOfProduction" class="form-control custom-select-height" name="YearOfProduction">
+                                <option value="">Wybierz rok</option>
+                                @if (Model.Item1.YearsList != null)
+                                {
+                                    @foreach (var year in Model.Item1.YearsList)
+                                    {
+                                        <option value="@year">@year</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Item1.YearOfProduction" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
+
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.FuelType" class="control-label"></label>
-                    <select asp-for="Item1.FuelType" asp-items="@ViewBag.FuelType" class="form-control" style="height: 60px;">
+                        <select asp-for="Item1.FuelType" asp-items="@ViewBag.FuelType" name="FuelType" class="form-control" style="height: 60px;">
                         <option value="" selected>Typ paliwa</option>
                     </select>
                     <span asp-validation-for="Item1.FuelType" class="text-danger"></span>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-md-7 mb-3">
-                    <label asp-for="Item1.Mileage" class="control-label"></label>
-                    <input asp-for="Item1.Mileage" class="form-control" style="height: 60px;" />
-                    <span asp-validation-for="Item1.Mileage" class="text-danger"></span>
-                </div>
+                <label asp-for="Item1.Mileage" class="control-label"></label>
+                    <input asp-for="Item1.Mileage" name="Mileage" class="form-control" />
+                <span asp-validation-for="Item1.Mileage" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="col-md-7 mb-3">
                     <label asp-for="Item1.Price" class="control-label"></label>
-                    <input asp-for="Item1.Price" class="form-control" style="height: 60px;" />
+                        <input asp-for="Item1.Price" name="Price" class="form-control" style="height: 60px;" />
                     <span asp-validation-for="Item1.Price" class="text-danger"></span>
                 </div>
             </div>
@@ -151,12 +163,12 @@
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-
+        </div>
             <input type="hidden" id="selectedFileName" name="selectedFileName"  />
-
+        
         </form>
     </div>
-</div>
+
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -337,8 +349,8 @@
                 // Wyczyść istniejące opcje w selectedGeneration
                 $('#selectedGeneration').empty();
 
-                // Dodaj domyślną opcję do selectedModel
-                $('#selectedModel').append($('<option>', {
+                // Dodaj domyślną opcję do selectedGeneration
+                $('#selectedGeneration').append($('<option>', {
                     value: '',
                     text: 'Wybierz generację',
                     disabled: true,
@@ -371,3 +383,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+                </body>

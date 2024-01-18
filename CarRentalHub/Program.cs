@@ -10,6 +10,7 @@ using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using JavaScriptEngineSwitcher.Core.Extensions;
 using React.AspNet;
 using System.Runtime.ConstrainedExecution;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -90,6 +91,11 @@ app.UseReact(config =>
     //  .SetLoadBabel(false)
     //  .AddScriptWithoutTransform("~/js/bundle.server.js");
 });
+
+//var culture = new CultureInfo("en-US");  // Lub inna kultura, np. "en-US"
+//culture.NumberFormat.NumberDecimalSeparator = ".";
+//CultureInfo.DefaultThreadCurrentCulture = culture;
+//CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 app.UseStaticFiles();
 

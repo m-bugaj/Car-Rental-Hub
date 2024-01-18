@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using CarRentalHub.Areas.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
+using System.Globalization;
 
 namespace CarRentalHub.Controllers
 {
@@ -384,6 +385,7 @@ namespace CarRentalHub.Controllers
             }
 
             var car = await _context.CarInfoModel.FindAsync(id);
+            car.YearsList = Enumerable.Range(1900, DateTime.Now.Year - 1899).Reverse().ToList();
             if (car == null)
             {
                 return NotFound();
@@ -396,10 +398,9 @@ namespace CarRentalHub.Controllers
                 return Forbid(); // Możesz również użyć return Unauthorized();
             }
 
-            var model = new Tuple<Car, IEnumerable<Photo>, List<int>>(
+            var model = new Tuple<Car, IEnumerable<Photo>>(
                 car,
-                await _photoContext.Photo.ToListAsync(),
-                Enumerable.Range(1900, DateTime.Now.Year - 1899).Reverse().ToList()
+                await _photoContext.Photo.ToListAsync()
             );
 
 
@@ -415,6 +416,18 @@ namespace CarRentalHub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId,SelectedFileName")] Car car)
         {
+            // Przekształć tekstową wartość ceny na decimal
+            if (decimal.TryParse(car.Price.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal parsedPrice))
+            {
+                car.Price = parsedPrice;
+            }
+            else
+            {
+                // Jeśli nie uda się przekształcić, obsłuż błąd
+                ModelState.AddModelError("Item1.Price", "Nieprawidłowy format ceny.");
+            }
+            Console.WriteLine("QQQ");
+            Console.WriteLine(car.Price);
             if (id != car.ID)
             {
                 return NotFound();
@@ -444,6 +457,7 @@ namespace CarRentalHub.Controllers
                         throw;
                     }
                 }
+
 
                 Console.WriteLine(car.SelectedFileName);
                 // Przetwarzanie jeżeli zostało zmienione zdjęcie główne bez przesłania plików
@@ -528,7 +542,15 @@ namespace CarRentalHub.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(car);
+
+            car.YearsList = Enumerable.Range(1900, DateTime.Now.Year - 1899).Reverse().ToList();
+
+            var model = new Tuple<Car, IEnumerable<Photo>>(
+                car,
+                await _photoContext.Photo.ToListAsync()
+            );
+
+            return View(model);
         }
 
         // GET: Cars/Delete/5

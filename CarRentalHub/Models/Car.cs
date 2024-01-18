@@ -34,7 +34,10 @@ namespace CarRentalHub.Models
         public int Mileage { get; set; }
 
         [Display(Name = "Cena za dobę")]
+        [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:#,##0.00}", ApplyFormatInEditMode = true)]
         public decimal Price { get; set; }
+
 
         //Foreign key (from AspNetUsers - Id)
         public string? UserId { get; set; }
