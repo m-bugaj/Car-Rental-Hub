@@ -42,6 +42,11 @@
         </div>
     </div>
 </div>
+<a asp-controller="Account" asp-action="ExternalLogin" asp-route-provider="Google">Log in with Google</a>
+@* <a asp-page="./Account/Login" asp-handler="ExternalLogin" asp-route-provider="Google">Log in with Google</a> *@
+
+
+
 
 @section Scripts {
     @await RenderSectionAsync("Scripts", required: false)

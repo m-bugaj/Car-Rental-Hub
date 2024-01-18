@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>10316d5e-6500-4e9c-9ab8-c2c73dec6ff7</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,6 +32,7 @@
     <PackageReference Include="JavaScriptEngineSwitcher.V8" Version="3.23.2" />
     <PackageReference Include="JavaScriptEngineSwitcher.V8.Native.win-x64" Version="3.23.2" />
     <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
