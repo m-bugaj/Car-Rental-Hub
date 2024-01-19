@@ -14,4 +14,7 @@
     }
 </style>
 
-<div class="header-gradient"></div>
+@if (Context.Request.Path == "/Identity/Account/Manage")
+{
+    <div class="header-gradient"></div>
+}
