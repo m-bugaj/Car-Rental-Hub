@@ -4,11 +4,23 @@
     ViewData["Title"] = "Delete";
 }
 
-<h1>Delete</h1>
+<style>
+    .header-gradient {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 90px; /* Wysokość gradientu */
+        background: linear-gradient(to bottom right, #0077cc, #004466); /* Gradient diagonalny w odcieniach niebieskiego */
+    }
+</style>
 
-<h3>Are you sure you want to delete this?</h3>
+<div class="header-gradient"></div>
+
+<h1>Usuń ogłoszenie</h1>
+
+<h3>Czy na pewno chcesz usunąć ogłoszenie?</h3>
 <div>
-    <h4>Car</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -63,7 +75,9 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Usuń" class="btn btn-danger" /> |
+        <div style="margin-top: 10px;">
+            <a asp-controller="Cars" asp-action="MyOffers">Powrót do "Moje oferty"</a>
+        </div>
     </form>
 </div>

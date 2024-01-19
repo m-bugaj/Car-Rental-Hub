@@ -4,6 +4,11 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var firstName = user?.FirstName;
+}
+
 
 <head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -16,9 +21,11 @@
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
+        
+
+    @* <li class="nav-item">
         <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Moje konto</a>
-    </li>
+    </li> *@
 
         <li id="myOffersNavItem">
             <a class="nav-link rounded nav-link-offers" asp-area="" asp-controller="Cars" asp-action="MyOffers">
@@ -30,6 +37,20 @@
             <a class="nav-link rounded nav-link-reservation" asp-area="" asp-controller="Cars" asp-action="MyReservations">
                 <i class="fas fa-list"></i> Moje rezerwacje
             </a>
+        </li>
+
+        <li class="nav-item">
+            <div class="d-flex align-items-center">
+                <a id="manage" class="nav-link nav-link-account rounded" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" style="background: #fff; margin-left: 10px; margin-right: 10px;">
+                    <div class="d-flex align-items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                            <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                        </svg>
+                        <span class="ms-2">Witaj, @firstName!</span>
+                    </div>
+                </a>
+            </div>
         </li>
 
 
@@ -63,13 +84,14 @@ else
     {
             <!-- HTML code to be executed only if the page is not at /Identity/Account/Login -->
         <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Log in</a>
+                <a class="nav-link nav-link-login" id="login" asp-area="Identity" asp-page="/Account/Login">Log in</a>
         </li>
         <li class="nav-item">
-                <a class="nav-link text-light rounded" id="register" asp-area="Identity" asp-page="/Account/Register" style="background: linear-gradient(to bottom, #5340FF, #4334CF);">Sign up</a>
+                <a class="nav-link text-light rounded" id="register" asp-area="Identity" asp-page="/Account/Register" style="background: linear-gradient(to bottom, #3498db, #2980b9);">Sign up</a>
         </li>
         
     }
+
 }
 
 

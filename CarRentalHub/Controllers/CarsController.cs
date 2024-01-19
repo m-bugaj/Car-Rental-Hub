@@ -37,6 +37,7 @@ namespace CarRentalHub.Controllers
         }
 
         // GET: Cars
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string selectedMarka, string selectedModel, string selectedGeneration, int? selectedYearFrom, int? selectedYearTo, string selectedBodyType, string selectedFuelType, int? MileageFrom, int? MileageTo, int? PriceFrom, int? PriceTo)
         {
             // Pobierz samochody na podstawie wybranych marek i modeli z bazy danych
@@ -341,7 +342,7 @@ namespace CarRentalHub.Controllers
                     await _photoContext.SaveChangesAsync();
                 }
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyOffers));
             }
 
             return View(car);
@@ -417,7 +418,7 @@ namespace CarRentalHub.Controllers
         public async Task<IActionResult> Edit(int id, [Bind("ID,VehicleBrand,CarModel,Generation,BodyType,YearOfProduction,FuelType,Mileage,Price,UserId,Photos,SelectedPhotoId,SelectedFileName")] Car car)
         {
             // Przekształć tekstową wartość ceny na decimal
-            if (decimal.TryParse(car.Price.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal parsedPrice))
+            if (int.TryParse(car.Price.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out int parsedPrice))
             {
                 car.Price = parsedPrice;
             }

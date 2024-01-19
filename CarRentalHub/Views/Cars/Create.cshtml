@@ -23,13 +23,33 @@
 
     <div class="header-gradient"></div>
 
+    <style>
+        #imagePreview {
+            display: flex;
+            justify-content: center; /* Wyśrodkuj horyzontalnie */
+            align-items: center; /* Wyśrodkuj wertykalnie */
+            overflow: hidden;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+            #imagePreview img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 8px; /* Zaokrąglanie pojedynczego obrazu */
+                margin: 0 5px; /* Dodaj odstęp między zdjęciami */
+            }
+
+
+</style>
+
 <h1>Dodaj ogłoszenie</h1>
 
 <hr />
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
-        <div class="col-md-4">  
+        <div class="col-md-5">  
                 <div class="form-group">
                         <div class="col-md-7 mb-3">
                             <label asp-for="VehicleBrand" class="control-label"></label>
@@ -85,22 +105,26 @@
                         </div>
                     </div>
                 <div class="form-group">
-                    <label asp-for="Mileage" class="control-label"></label>
-                    <input asp-for="Mileage" class="form-control" />
-                    <span asp-validation-for="Mileage" class="text-danger"></span>
+                    <div class="col-md-7 mb-3">
+                        <label asp-for="Mileage" class="control-label"></label>
+                        <input asp-for="Mileage" class="form-control" style="height: 60px;" pattern="\d+" title="Wprowadź liczbę całkowitą" oninput="validateInput(this)" />
+                        <span asp-validation-for="Mileage" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Price" class="control-label"></label>
-                    <input asp-for="Price" class="form-control" />
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>     
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label asp-for="Photos" class="control-label"></label>
-                <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
-                <span asp-validation-for="Photos" class="text-danger"></span>
+                <div class="form-group" style="align-items: center; justify-content: center; text-align: center;">
+                    <div class="col-md-7 mb-3">
+                        <label asp-for="Price" class="control-label"></label>
+                        <input asp-for="Price" class="form-control" style="height: 60px;" pattern="\d+" title="Wprowadź liczbę całkowitą" oninput="validateInput(this)" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
             </div>
+        <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Photos" class="control-label"></label>
+                    <input type="file" name="Photos" id="photoInput" multiple onchange="previewImages()" />
+                    <span asp-validation-for="Photos" class="text-danger"></span>
+                </div>
             <div id="imagePreview" class="row" onclick="handleThumbnailClick()"></div>
                 <div id="selectedPhoto" class="row mt-3">
                     <label>Wybrane zdjęcie główne:</label>
@@ -113,9 +137,17 @@
     <input type="hidden" id="selectedFileName" name="selectedFileName" />
 </form>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div style="margin-top: 10px;">
+        <a asp-controller="FilterData" asp-action="Index">Powrót do strony głównej</a>
+    </div>
+
+
+<script>
+    function validateInput(input) {
+        // Usuń znaki inne niż cyfry
+        input.value = input.value.replace(/[^\d]/g, '');
+    }
+</script>
 
 <script>
     var selectedFileId = null;
@@ -136,9 +168,11 @@
                     var fileId = "photo_" + i;
                     var colDiv = document.createElement("div");
                     colDiv.className = "col-md-4";
+                    colDiv.style = "padding: 10px";
                     var img = document.createElement("img");
                     img.src = e.target.result;
                     img.className = "img-thumbnail";
+                    img.style = "padding: 0px;";
                     img.setAttribute("data-file-id", fileId);
 
                     // Ustaw atrybut "data-file-name"
@@ -151,6 +185,7 @@
                         // Ustaw pierwsze zdjęcie jako domyślnie wybrane
                         selectedFileId = fileId;
                         img.classList.add("selected");
+                            img.style = "padding: 0px; max-width: 100%; height: auto;";
                         displaySelectedPhoto(fileId);
                     }
                 };
@@ -163,36 +198,41 @@
     }
 
     function handleThumbnailClick() {
-        var thumbnails = document.getElementsByClassName("img-thumbnail");
+            var clickedElement = event.target;
 
-        for (var j = 0; j < thumbnails.length; j++) {
-            thumbnails[j].classList.remove("selected");
+            // Sprawdź, czy kliknięty element to obraz
+        if (clickedElement.tagName === 'IMG') {
+            var thumbnails = document.getElementsByClassName("img-thumbnail");
+
+            for (var j = 0; j < thumbnails.length; j++) {
+                thumbnails[j].classList.remove("selected");
+            }
+
+            var clickedThumbnail = event.target;
+            clickedThumbnail.classList.add("selected");
+            selectedFileId = clickedThumbnail.getAttribute("data-file-id");
+            var SelectedFileName = clickedThumbnail.getAttribute("data-file-name");
+
+            console.log("SelectedFileName in JavaScript: ", SelectedFileName);
+
+
+            // Wywołaj funkcję wyświetlającą wybrane zdjęcie
+            displaySelectedPhoto(selectedFileId);
+
+            //document.getElementById("SelectedFileName").value = SelectedFileName;
+            var selectedFileNameInput = document.getElementById("selectedFileName");
+            if (selectedFileNameInput) {
+                // Ustaw wartość pola ukrytego w formularzu
+                selectedFileNameInput.value = SelectedFileName;
+
+                // ... pozostała część funkcji ...
+            } else {
+                console.error("Element with id 'SelectedFileName' not found!");
+            }
+
+            // Ustaw ukryte pole z identyfikatorem wybranego zdjęcia
+            document.getElementById("selectedPhotoId").value = selectedFileId;
         }
-
-        var clickedThumbnail = event.target;
-        clickedThumbnail.classList.add("selected");
-        selectedFileId = clickedThumbnail.getAttribute("data-file-id");
-        var SelectedFileName = clickedThumbnail.getAttribute("data-file-name");
-
-        console.log("SelectedFileName in JavaScript: ", SelectedFileName);
-        
-
-        // Wywołaj funkcję wyświetlającą wybrane zdjęcie
-        displaySelectedPhoto(selectedFileId);
-
-        //document.getElementById("SelectedFileName").value = SelectedFileName;
-        var selectedFileNameInput = document.getElementById("selectedFileName");
-        if (selectedFileNameInput) {
-            // Ustaw wartość pola ukrytego w formularzu
-            selectedFileNameInput.value = SelectedFileName;
-
-            // ... pozostała część funkcji ...
-        } else {
-            console.error("Element with id 'SelectedFileName' not found!");
-        }
-
-        // Ustaw ukryte pole z identyfikatorem wybranego zdjęcia
-        document.getElementById("selectedPhotoId").value = selectedFileId;
     }
 
     function displaySelectedPhoto(fileId) {
@@ -207,6 +247,7 @@
         var selectedPhoto = document.createElement("img");
         selectedPhoto.src = document.querySelector('[data-file-id="' + fileId + '"]').src;
         selectedPhoto.className = "img-thumbnail";
+            selectedPhoto.style = "padding: 0px;  border-radius: 10px;";
         selectedPhotoDiv.appendChild(selectedPhoto);
     }
 

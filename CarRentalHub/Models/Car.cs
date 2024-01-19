@@ -33,10 +33,9 @@ namespace CarRentalHub.Models
         [Display(Name = "Przebieg")]
         public int Mileage { get; set; }
 
-        [Display(Name = "Cena za dobę")]
-        [DataType(DataType.Currency)]
-        [DisplayFormat(DataFormatString = "{0:#,##0.00}", ApplyFormatInEditMode = true)]
-        public decimal Price { get; set; }
+        [Display(Name = "Cena za dobę (PLN)")]
+        [Range(0, int.MaxValue, ErrorMessage = "Wprowadź liczbę całkowitą większą lub równą 0.")]
+        public int Price { get; set; }
 
 
         //Foreign key (from AspNetUsers - Id)
