@@ -2,6 +2,16 @@
 
 Welcome to AutoRent, a web application that serves as a car rental platform, allowing users to list their cars for rent and make reservations. It's your go-to online car rental hub where anyone can showcase their vehicles.
 
+## Gallery
+
+<details>
+  <summary>Przesuwane Zdjęcia</summary>
+
+  ![Zdjęcie 1](Gallery/main_dashboard.png)
+  ![Zdjęcie 2](Gallery/filter_form.png)
+</details>
+
+
 ## Features 🌟
 
 - **Responsive Design** 📱: Utilizing Bootstrap for a responsive, functional, and modern look.
