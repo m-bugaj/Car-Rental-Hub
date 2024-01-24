@@ -4,11 +4,52 @@ Welcome to AutoRent, a web application that serves as a car rental platform, all
 
 ## Gallery
 
-<details>
-  <summary>Przesuwane Zdjęcia</summary>
+<details open>
+  <summary>Main Dashboard</summary>
+  
+  ![Main Dashboard](Gallery/main_dashboard.png)
+</details>
 
-  ![Zdjęcie 1](Gallery/main_dashboard.png)
-  ![Zdjęcie 2](Gallery/filter_form.png)
+<details>
+  <summary>Filter Form</summary>
+  
+  ![Filter Form](Gallery/filter_form.png)
+</details>
+
+<details>
+  <summary>Add a Car Ad</summary>
+  
+  ![Add a Car Ad - Main View](Gallery/dodajogl.png)
+</details>
+
+<details>
+  <summary>Car Ads List</summary>
+  
+  ![Car Ads List](Gallery/ogloszenia.png)
+</details>
+
+<details>
+  <summary>Car Ad Details</summary>
+  
+  ![Car Ad Details](Gallery/ogloszenie.png)
+</details>
+
+<details>
+  <summary>Event Calendar</summary>
+  
+  ![Event Calendar](Gallery/kalendarz.png)
+</details>
+
+<details>
+  <summary>Reservation Form</summary>
+  
+  ![Reservation Form](Gallery/rezerwacja.png)
+</details>
+
+<details>
+  <summary>Login Screen</summary>
+  
+  ![Login Screen](Gallery/login.png)
 </details>
 
 
