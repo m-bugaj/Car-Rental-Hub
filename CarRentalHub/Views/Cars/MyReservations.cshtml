@@ -169,9 +169,9 @@
                                     <i class="bi bi-calendar icon"></i> Data rezerwacji: @reservationItem.ReservationDate.ToShortDateString()
                                 </p>
 
-                                <p class="card-text small text-muted mb-2">
-                                    <strong>Okres rezerwacji:</strong> @reservationItem.StartDate.ToShortDateString() - @reservationItem.EndDate.ToShortDateString()
-                                </p>
+                                        <p class="card-text small text-muted mb-2">
+                                            <strong>Okres rezerwacji:</strong> <span id="startDate">@reservationItem.StartDate.ToShortDateString()</span> - <span id="endDate">@reservationItem.EndDate.ToShortDateString()</span>
+                                        </p>
                                 </div>
 
                                 <p class="card-text small text-muted mb-2">
@@ -230,6 +230,36 @@
         
     </div>
 </div>
+
+<script>
+    // Pobierz daty z elementów HTML i wyświetl je w konsoli
+    var startDateString = document.getElementById('startDate').innerText;
+    var endDateString = document.getElementById('endDate').innerText;
+
+    console.log('Data początkowa: ' + startDateString);
+    console.log('Data końcowa: ' + endDateString);
+
+    // Podziel datę na części: dzień, miesiąc, rok
+    var startDateParts = startDateString.split('.');
+    var endDateParts = endDateString.split('.');
+
+    // Utwórz obiekty daty JavaScript z części daty
+    var startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+    var endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+
+    // Oblicz różnicę w dniach, tylko jeśli daty zostały prawidłowo przekształcone
+    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        var differenceInTime = endDate.getTime() - startDate.getTime();
+        var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+        // Wyświetl różnicę w dniach
+        console.log('Różnica w dniach: ' + differenceInDays);
+    } else {
+        console.log('Nieprawidłowe daty');
+    }
+</script>
+
+
 
 <script>
     // JavaScript do uzależnienia wysokości background-bar od wysokości hero-section
