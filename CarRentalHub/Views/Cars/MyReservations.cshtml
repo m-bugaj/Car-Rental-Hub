@@ -201,7 +201,16 @@
                                         <i class="bi bi-car icon"></i> @Html.DisplayFor(modelItem => item.BodyType)
                                     </p>
                                 </div>
-                                <p class="card-text"><strong>Cena za dobę:</strong> @Html.DisplayFor(modelItem => item.Price) PLN</p>
+                                <div class="d-flex justify-content-between mb-2" style="margin-top: 15px;">
+                                        <div class="card-text" style="display: none;">
+                                        <strong>Cena za dobę:</strong> <span id="dailyPrice">@Html.DisplayFor(modelItem => item.Price)</span> PLN
+                                    </div>
+                                        <div class="card-text" style="border: 1px solid green; border-radius: 5px; padding: 5px;">
+                                            <strong>Cena za rezerwację: <span id="fullPrice" style="color: green;">@Html.DisplayFor(modelItem => item.Price)</span> <span style="color: green;">PLN</span></strong>
+                                        </div>
+
+
+                                </div>
                                 <div style="display: flex; justify-content: space-between;">
 
                                     <button onclick="window.location='@Url.Action("Details", "Cars", new { id = item.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center" style="margin-right: 5px;">
@@ -235,6 +244,8 @@
     // Pobierz daty z elementów HTML i wyświetl je w konsoli
     var startDateString = document.getElementById('startDate').innerText;
     var endDateString = document.getElementById('endDate').innerText;
+    var dailyPrice = document.getElementById('dailyPrice').innerText;
+    
 
     console.log('Data początkowa: ' + startDateString);
     console.log('Data końcowa: ' + endDateString);
@@ -251,9 +262,12 @@
     if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
         var differenceInTime = endDate.getTime() - startDate.getTime();
         var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+        var fullPrice = differenceInDays * dailyPrice;
 
         // Wyświetl różnicę w dniach
-        console.log('Różnica w dniach: ' + differenceInDays);
+        // console.log('Różnica w dniach: ' + differenceInDays);
+
+        document.getElementById('fullPrice').innerText = fullPrice.toFixed(2);
     } else {
         console.log('Nieprawidłowe daty');
     }
