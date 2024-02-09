@@ -124,7 +124,8 @@
             {
                 if (reservationItem.CarID == item.ID)
                 {
-                    <div class="col-md-9 mb-4">
+                    var uniqueId = "reservation_" + reservationItem.ID;
+                    <div class="col-md-9 mb-4" id="@uniqueId">
                         <div class="card d-flex">
                             <div class="row" style="padding: 15px; padding-left: 25px; padding-right: 25px;">
                             <div class="col-md-5 image-container" style="padding: 5px;">
@@ -134,9 +135,6 @@
                                 
                             @if (mainPhoto != null)
                             {
-                                <script>
-                                    console.log("ELO");
-                                </script>
                                 var index = mainPhoto.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
                                 if (index != -1)
                                 {
@@ -232,6 +230,37 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        // Pobierz daty z elementów HTML i wyświetl je w konsoli
+                        var startDateString = document.getElementById('@uniqueId').querySelector('#startDate').innerText;
+                        var endDateString = document.getElementById('@uniqueId').querySelector('#endDate').innerText;
+                        var dailyPrice = document.getElementById('@uniqueId').querySelector('#dailyPrice').innerText;
+
+                        @* console.log('Data początkowa: ' + startDateString); *@
+                        @* console.log('Data końcowa: ' + endDateString); *@
+
+                        // Podziel datę na części: dzień, miesiąc, rok
+                        var startDateParts = startDateString.split('.');
+                        var endDateParts = endDateString.split('.');
+
+                        // Utwórz obiekty daty JavaScript z części daty
+                        var startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+                        var endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+
+                        // Oblicz różnicę w dniach, tylko jeśli daty zostały prawidłowo przekształcone
+                        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                            var differenceInTime = endDate.getTime() - startDate.getTime();
+                            var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+                            var fullPrice = differenceInDays * dailyPrice;
+
+                            // Wyświetl różnicę w dniach
+                            @* console.log('Różnica w dniach: ' + differenceInDays); *@
+
+                            document.getElementById('@uniqueId').querySelector('#fullPrice').innerText = fullPrice.toFixed(2);
+                        } else {
+                            console.log('Nieprawidłowe daty');
+                        }
+                    </script>
                 }
                 
             }
@@ -240,38 +269,7 @@
     </div>
 </div>
 
-<script>
-    // Pobierz daty z elementów HTML i wyświetl je w konsoli
-    var startDateString = document.getElementById('startDate').innerText;
-    var endDateString = document.getElementById('endDate').innerText;
-    var dailyPrice = document.getElementById('dailyPrice').innerText;
-    
 
-    console.log('Data początkowa: ' + startDateString);
-    console.log('Data końcowa: ' + endDateString);
-
-    // Podziel datę na części: dzień, miesiąc, rok
-    var startDateParts = startDateString.split('.');
-    var endDateParts = endDateString.split('.');
-
-    // Utwórz obiekty daty JavaScript z części daty
-    var startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
-    var endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
-
-    // Oblicz różnicę w dniach, tylko jeśli daty zostały prawidłowo przekształcone
-    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-        var differenceInTime = endDate.getTime() - startDate.getTime();
-        var differenceInDays = differenceInTime / (1000 * 3600 * 24);
-        var fullPrice = differenceInDays * dailyPrice;
-
-        // Wyświetl różnicę w dniach
-        // console.log('Różnica w dniach: ' + differenceInDays);
-
-        document.getElementById('fullPrice').innerText = fullPrice.toFixed(2);
-    } else {
-        console.log('Nieprawidłowe daty');
-    }
-</script>
 
 
 
