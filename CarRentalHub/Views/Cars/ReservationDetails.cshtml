@@ -1,0 +1,115 @@
+﻿@model Tuple<IEnumerable<CarRentalHub.Models.Car>, IEnumerable<CarRentalHub.Models.Photo>, IEnumerable<CarRentalHub.Models.CarAvailability>>
+
+
+@{
+    ViewData["Title"] = "My Reservation";
+}
+
+<h1>Moje rezerwacja</h1>
+
+<style>
+    body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        border-bottom: 1px solid #ccc; /* Lekka szara linia oddzielająca label */
+        padding-bottom: 10px; /* Dodatkowy odstęp na dole tytułu */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .header-gradient {
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        height: 90px; /* Wysokość gradientu */
+        background: linear-gradient(to bottom right, #0077cc, #004466); /* Gradient diagonalny w odcieniach niebieskiego */
+    }
+
+    .custom-thumbnail {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .card {
+        border: 1px solid #e0e0e0;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+    }
+
+        .card:hover {
+            border: 1px solid #007bff;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+    .card-title {
+        color: #343a40;
+    }
+
+    .card-text {
+        color: #6c757d;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .icon {
+        margin-right: 5px;
+        color: #6c757d;
+    }
+
+    .card-text.small.text-muted {
+        margin-bottom: 5px;
+    }
+
+    .cancel-button {
+        margin-right: 5px;
+        background: red;
+        border: none;
+        /* height: 38px; */
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+        .cancel-button:hover {
+            background: darkred; /* Kolor po najechaniu myszą */
+        }
+
+        .cancel-button .tooltip {
+            visibility: hidden;
+            width: 170px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -85px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cancel-button:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+</style>
+
+<div class="header-gradient"></div>

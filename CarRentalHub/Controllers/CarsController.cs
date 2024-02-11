@@ -686,7 +686,57 @@ namespace CarRentalHub.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> MyOffers()
+        // GET: Cars/MyReservation/5
+        public async Task<IActionResult> ReservationDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = await _context.CarInfoModel
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+
+            // Get logged in userId
+            var userId = _userManager.GetUserId(User);
+
+            // Wybierz rezerwacje z bazy danych, gdzie ID jest równe id z zapytania GET
+            var reservation = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.ID == id)
+                .ToListAsync();
+
+            // Pobierz ID zarezerwowanego samochodów
+            var reservedCarId = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.ID == id)
+                .Select(r => r.CarID)
+                .ToListAsync();
+
+            // Wybierz auta z CarInfoModel, których ID występuje w zarezerwowanych CarID
+            var bookedCarInfo = _context.CarInfoModel
+                .Where(b => reservedCarId.Contains(b.ID))
+                .ToList();
+
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>, IEnumerable<CarAvailability>>(
+                    bookedCarInfo,
+                    await _photoContext.Photo.ToListAsync(),
+                    reservation
+                    );
+
+            ViewData["CurrentReservationId"] = id;
+            ViewData["UserId"] = userId;
+
+            return View(model);
+
+
+        }
+
+            public async Task<IActionResult> MyOffers()
         {
             // Ustawienie dostępu do edycji ogłoszenia
             var userId = _userManager.GetUserId(User);
