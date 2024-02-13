@@ -5,7 +5,7 @@
     ViewData["Title"] = "My Reservation";
 }
 
-<h1>Moje rezerwacja</h1>
+<h1>Szczegóły rezerwacji</h1>
 
 <style>
     body {
@@ -113,3 +113,11 @@
 </style>
 
 <div class="header-gradient"></div>
+
+@{
+    var sellersEmail = ViewBag.SellersEmail;
+}
+
+Twój e-mail kontaktowy: @Model.Item3.First().Email
+Twój numer telefonu: @Model.Item3.First().Phone
+Email sprzedawcy: @sellersEmail

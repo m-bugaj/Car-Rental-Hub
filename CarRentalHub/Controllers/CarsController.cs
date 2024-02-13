@@ -728,6 +728,17 @@ namespace CarRentalHub.Controllers
                     reservation
                     );
 
+            var sellerId = _context.CarInfoModel
+                .Where(c => c.ID == bookedCarInfo.First().ID)
+                .Select(c=> c.UserId)
+                .FirstOrDefault();
+
+            var sellersEmail = _userManager.Users
+                .Where(u => u.Id == sellerId)
+                .Select(u => u.Email)
+                .FirstOrDefault();
+
+            ViewBag.SellersEmail = sellersEmail;
             ViewData["CurrentReservationId"] = id;
             ViewData["UserId"] = userId;
 
