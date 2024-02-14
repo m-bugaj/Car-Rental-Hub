@@ -747,7 +747,69 @@ namespace CarRentalHub.Controllers
 
         }
 
-            public async Task<IActionResult> MyOffers()
+        // GET: Cars/Reservations/5
+        public async Task<IActionResult> Reservations(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var car = await _context.CarInfoModel
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (car == null)
+            {
+                return NotFound();
+            }
+
+
+            // Get logged in userId
+            var userId = _userManager.GetUserId(User);
+
+            // Wybierz rezerwacje z bazy danych, gdzie ID jest równe id z zapytania GET
+            var reservation = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.CarID == id)
+                .ToListAsync();
+
+
+            // Pobierz ID zarezerwowanego samochodów
+            var reservedCarId = await _carAvailabilityContext.CarAvailability
+                .Where(r => r.CarID == id)
+                .Select(r => r.CarID)
+                .ToListAsync();
+
+            // Wybierz auta z CarInfoModel, których ID występuje w zarezerwowanych CarID
+            var bookedCarInfo = _context.CarInfoModel
+                .Where(b => reservedCarId.Contains(b.ID))
+                .ToList();
+
+            var model = new Tuple<IEnumerable<Car>, IEnumerable<Photo>, IEnumerable<CarAvailability>>(
+                    bookedCarInfo,
+                    await _photoContext.Photo.ToListAsync(),
+                    reservation
+                    );
+
+            //var sellerId = _context.CarInfoModel
+            //    .Where(c => c.ID == bookedCarInfo.First().ID)
+            //    .Select(c => c.UserId)
+            //    .FirstOrDefault();
+
+            //var sellersEmail = _userManager.Users
+            //    .Where(u => u.Id == sellerId)
+            //    .Select(u => u.Email)
+            //    .FirstOrDefault();
+
+            //ViewBag.SellersEmail = sellersEmail;
+            ViewData["CurrentReservationId"] = id;
+            ViewData["UserId"] = userId;
+
+            return View(model);
+
+
+        }
+
+        public async Task<IActionResult> MyOffers()
         {
             // Ustawienie dostępu do edycji ogłoszenia
             var userId = _userManager.GetUserId(User);

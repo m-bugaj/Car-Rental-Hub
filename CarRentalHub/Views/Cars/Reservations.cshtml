@@ -2,10 +2,10 @@
 
 
 @{
-    ViewData["Title"] = "My Reservations";
+    ViewData["Title"] = "Reservations";
 }
 
-<h1>Moje oferty</h1>
+<h1>Rezerwacje</h1>
 
 <style>
     body {
@@ -110,20 +110,6 @@
             visibility: visible;
             opacity: 1;
         }
-
-    .edit-button {
-        margin-right: 5px;
-        background: #3FBF78;
-        border: none;
-        /* height: 38px; */
-        display: inline-flex;
-        align-items: center;
-        position: relative;
-    }
-
-        .edit-button:hover {
-            background: #2E8B57; /* Kolor po najechaniu myszą */
-        }
 </style>
 
 <div class="header-gradient"></div>
@@ -132,14 +118,14 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        @* @foreach (var reservationItem in Model.Item3)
-        { *@
+        @foreach (var reservationItem in Model.Item3)
+        {
             @foreach (var item in Model.Item1)
             {
-                @* if (reservationItem.CarID == item.ID)
-                { *@
-                    <div class="col-md-9 mb-4">
-
+                if (reservationItem.CarID == item.ID)
+                {
+                    var uniqueId = "reservation_" + reservationItem.ID;
+                    <div class="col-md-9 mb-4" id="@uniqueId">
                         <div class="card d-flex">
                             <div class="row" style="padding: 15px; padding-left: 25px; padding-right: 25px;">
                                 <div class="col-md-5 image-container" style="padding: 5px;">
@@ -149,9 +135,6 @@
 
                                     @if (mainPhoto != null)
                                     {
-                                        <script>
-                                            console.log("ELO");
-                                        </script>
                                         var index = mainPhoto.ImagePath.IndexOf("\\images\\", StringComparison.OrdinalIgnoreCase);
                                         if (index != -1)
                                         {
@@ -175,8 +158,8 @@
                                 </div>
 
                                 <div class="col-md-4 card-body">
-                                    <h4 class="card-title">@Html.DisplayFor(modelItem => item.VehicleBrand) @Html.DisplayFor(modelItem => item.CarModel)</h4>
-                                    @* <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title">@Html.DisplayFor(modelItem => item.VehicleBrand) @Html.DisplayFor(modelItem => item.CarModel)</h5>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                         <p class="card-text small text-muted mb-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check-fill" viewBox="0 0 16 16">
                                                 <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
@@ -185,21 +168,16 @@
                                         </p>
 
                                         <p class="card-text small text-muted mb-2">
-                                            <strong>Okres rezerwacji:</strong> @reservationItem.StartDate.ToShortDateString() - @reservationItem.EndDate.ToShortDateString()
+                                            <strong>Okres rezerwacji:</strong> <span id="startDate">@reservationItem.StartDate.ToShortDateString()</span> - <span id="endDate">@reservationItem.EndDate.ToShortDateString()</span>
                                         </p>
-                                    </div> *@
-
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <h5 class="card-title text-muted">@Html.DisplayFor(modelItem => item.Generation)</h5>
                                     </div>
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
+
                                     <p class="card-text small text-muted mb-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check-fill" viewBox="0 0 16 16">
                                             <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
                                         </svg>
                                         <i class="bi bi-calendar icon"></i> @Html.DisplayFor(modelItem => item.YearOfProduction)
                                     </p>
-                                    </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <p class="card-text small text-muted">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-speedometer" viewBox="0 0 16 16">
@@ -221,49 +199,86 @@
                                             <i class="bi bi-car icon"></i> @Html.DisplayFor(modelItem => item.BodyType)
                                         </p>
                                     </div>
-                                    <p class="card-text"><strong>Cena za dobę:</strong> @Html.DisplayFor(modelItem => item.Price) PLN</p>
+                                    <div class="d-flex justify-content-between mb-2" style="margin-top: 15px;">
+                                        <div class="card-text" style="display: none;">
+                                            <strong>Cena za dobę:</strong> <span id="dailyPrice">@Html.DisplayFor(modelItem => item.Price)</span> PLN
+                                        </div>
+                                        <div class="card-text" style="border: 1px solid green; border-radius: 5px; padding: 5px;">
+                                            <strong>Cena za rezerwację: <span id="fullPrice" style="color: green;">@Html.DisplayFor(modelItem => item.Price)</span> <span style="color: green;">PLN</span></strong>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2" style="margin-top: 15px;">
+                                        <div class="card-text" style="border: 1px solid #8921B8; border-radius: 5px; padding: 5px;">
+                                            <strong>Dane klienta</strong>
+                                            <br />
+                                            <strong>E-mail: <span style="color: #8921B8;">@Html.DisplayFor(modelItem => reservationItem.Email)</span></strong>
+                                            <br />
+                                            <strong>Nr telefonu: <span style="color: #8921B8;">@Html.DisplayFor(modelItem => reservationItem.Phone)</span></strong>
+                                        </div>
+                                    </div>
                                     <div style="display: flex; justify-content: space-between;">
 
-                                <button onclick="window.location='@Url.Action("Reservations", "Cars", new { id = item.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center" style="margin-right: 5px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-check" viewBox="0 0 16 16" style="margin-right: 5px;">
-                                                <path fill-rule="evenodd" d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0" />
-                                                <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2" />
-                                                <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z" />
+                                        <button onclick="window.location='@Url.Action("ReservationDetails", "Cars", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center" style="margin-right: 5px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16" style="margin-right: 5px; ">
+                                                <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                             </svg>
-                                            Pokaż rezerwacje!
+                                            Skontaktuj się z klientem!
                                         </button>
 
-                                        <button onclick="window.location='@Url.Action("Edit", "Cars", new { id = item.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center edit-button" style="margin-right: 5px;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16" style="margin-right: 5px;">
-                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
-                                            </svg>
-                                            Edytuj ofertę!
-                                        </button>
-
-                                        <button onclick="window.location='@Url.Action("Delete", "Cars", new { id = item.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center cancel-button" style="">
+                                        <button onclick="window.location='@Url.Action("Delete", "CarAvailabilities", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center cancel-button" style="">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square-fill" viewBox="0 0 16 16" style="margin-right: 5px;">
                                                 <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
                                             </svg>
-                                            Usuń ofertę!
-                                            <span class="tooltip">Oferta zostanie usunięta!</span>
+                                            Anuluj rezerwację!
+                                            <span class="tooltip">Rezerwacja zostanie anulowana!</span>
                                         </button>
                                     </div>
-
-
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                @* } *@
+                    <script>
+                        // Pobierz daty z elementów HTML i wyświetl je w konsoli
+                        var startDateString = document.getElementById('@uniqueId').querySelector('#startDate').innerText;
+                        var endDateString = document.getElementById('@uniqueId').querySelector('#endDate').innerText;
+                        var dailyPrice = document.getElementById('@uniqueId').querySelector('#dailyPrice').innerText;
+
+                        @* console.log('Data początkowa: ' + startDateString); *@
+                        @* console.log('Data końcowa: ' + endDateString); *@
+
+                                                // Podziel datę na części: dzień, miesiąc, rok
+                                                var startDateParts = startDateString.split('.');
+                        var endDateParts = endDateString.split('.');
+
+                        // Utwórz obiekty daty JavaScript z części daty
+                        var startDate = new Date(startDateParts[2], startDateParts[1] - 1, startDateParts[0]);
+                        var endDate = new Date(endDateParts[2], endDateParts[1] - 1, endDateParts[0]);
+
+                        // Oblicz różnicę w dniach, tylko jeśli daty zostały prawidłowo przekształcone
+                        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+                            var differenceInTime = endDate.getTime() - startDate.getTime();
+                            var differenceInDays = differenceInTime / (1000 * 3600 * 24);
+                            var fullPrice = differenceInDays * dailyPrice;
+
+                            // Wyświetl różnicę w dniach
+                        @* console.log('Różnica w dniach: ' + differenceInDays); *@
+
+                                document.getElementById('@uniqueId').querySelector('#fullPrice').innerText = fullPrice.toFixed(2);
+                        } else {
+                            console.log('Nieprawidłowe daty');
+                        }
+                    </script>
+                }
 
             }
-        @* } *@
+        }
 
     </div>
 </div>
+
+
+
+
 
 <script>
     // JavaScript do uzależnienia wysokości background-bar od wysokości hero-section
