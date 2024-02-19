@@ -108,7 +108,44 @@
 
     .cancel-button:hover .tooltip {
         visibility: visible;
-        opacity: 1;
+        opacity: 0.9;
+    }
+
+    .info-button {
+        background: limegreen;
+        border: none;
+        transition: border-radius 0.5s ease;
+        display: inline-flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .info-button:hover {
+        background: green;
+        border-radius: 20px;
+    }
+
+        .info-button .tooltip {
+            visibility: hidden;
+            width: 170px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -30px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+
+    .info-button:hover .tooltip {
+        visibility: visible;
+        opacity: 0.9;
     }
 </style>
 
@@ -211,14 +248,21 @@
                                 </div>
                                 <div style="display: flex; justify-content: space-between;">
 
-                                        <button onclick="window.location='@Url.Action("ReservationDetails", "Cars", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center" style="margin-right: 5px;">
+                                    <button onclick="window.location='@Url.Action("ReservationDetails", "Cars", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center" style="margin-right: 5px;">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16" style="margin-right: 5px; ">
                                             <path d="M16 8c0 3.866-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.584.296-1.925.864-4.181 1.234-.2.032-.352-.176-.273-.362.354-.836.674-1.95.77-2.966C.744 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7M5 8a1 1 0 1 0-2 0 1 1 0 0 0 2 0m4 0a1 1 0 1 0-2 0 1 1 0 0 0 2 0m3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
                                         </svg>
                                         Skontaktuj się ze sprzedawcą!
                                     </button>
 
-                                        <button onclick="window.location='@Url.Action("Delete", "CarAvailabilities", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center cancel-button" style="">
+                                    <button onclick="window.location='@Url.Action("ReservationDetails", "Cars", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center info-button" style="margin-right: 5px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
+                                            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.93 4.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM8 5.5a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
+                                        </svg>
+                                            <span class="tooltip">Wyświetl szczegóły rezerwacji!</span>
+                                    </button>
+
+                                    <button onclick="window.location='@Url.Action("Delete", "CarAvailabilities", new { id = reservationItem.ID })'" class="btn btn-primary mt-3 d-inline-flex align-items-center cancel-button" style="">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-square-fill" viewBox="0 0 16 16" style="margin-right: 5px;">
                                             <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708" />
                                         </svg>
