@@ -59,6 +59,12 @@ Welcome to AutoRent, a web application that serves as a car rental platform, all
 </details>
 
 <details>
+  <summary>My Reservations</summary>
+  
+  ![My Reservations](Gallery/moje_rezerwacje.png)
+</details>
+
+<details>
   <summary>Reservation Details + Contact Screen</summary>
   
   ![Reservation Details + Contact Screen](Gallery/detalerezerwacjiseller.png)
